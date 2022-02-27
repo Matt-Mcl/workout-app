@@ -9,7 +9,7 @@ class Walk(models.Model):
     ]
     location = models.CharField(max_length=1, choices=LOCATION_CHOICES)
     duration = models.DurationField()
-    distance = models.DecimalField()
+    distance = models.DecimalField(max_digits=6, decimal_places=2)
     active_kilocalories = models.IntegerField()
     elevation_gain = models.IntegerField(blank=True)
     total_kilocalories = models.IntegerField()
@@ -22,9 +22,9 @@ class Run(models.Model):
     ]
     location = models.CharField(max_length=1, choices=LOCATION_CHOICES)
     duration = models.DurationField()
-    distance = models.DecimalField()
+    distance = models.DecimalField(max_digits=6, decimal_places=2)
     active_kilocalories = models.IntegerField()
-    elevation_gain = models.IntegerField(blank=True))
+    elevation_gain = models.IntegerField(blank=True)
     total_kilocalories = models.IntegerField()
     average_heart_rate = models.IntegerField()
     average_cadence = models.IntegerField()
