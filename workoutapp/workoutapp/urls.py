@@ -25,7 +25,7 @@ router.register(r'runs', views.RunViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', views.home, name='home'),
+    path('', views.home, name='home'),
     # path('walk/<int:walk_id>/', views.walk_detail, name='walk_detail'),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

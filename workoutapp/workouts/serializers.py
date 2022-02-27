@@ -5,10 +5,10 @@ from .models import Walk, Run
 class WalkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Walk
-        fields = ('location', 'duration', 'distance', 'actual_distance', 'active_kilocalories', 'elevation_gain', 'total_kilocalories', 'average_heart_rate')
+        fields = ('start_time', 'location', 'duration', 'distance', 'actual_distance', 'active_kilocalories', 'elevation_gain', 'total_kilocalories', 'average_heart_rate')
 
 class RunSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Run
-        fields = ('location', 'duration', 'distance', 'actual_distance', 'active_kilocalories', 'elevation_gain', 'total_kilocalories', 'average_heart_rate', 'average_cadence')
+        fields = ('start_time', 'location', 'duration', 'distance', 'actual_distance', 'active_kilocalories', 'elevation_gain', 'total_kilocalories', 'average_heart_rate', 'average_cadence')
 

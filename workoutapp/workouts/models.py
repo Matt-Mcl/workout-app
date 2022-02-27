@@ -7,6 +7,7 @@ class Walk(models.Model):
         ('I', 'Indoor')
     ]
     location = models.CharField(max_length=1, choices=LOCATION_CHOICES)
+    start_time = models.DateTimeField()
     duration = models.DurationField()
     distance = models.DecimalField(max_digits=6, decimal_places=2)
     actual_distance = models.DecimalField(null=True, max_digits=6, decimal_places=2)
@@ -22,6 +23,7 @@ class Run(models.Model):
         ('I', 'Indoor')
     ]
     location = models.CharField(max_length=1, choices=LOCATION_CHOICES)
+    start_time = models.DateTimeField()
     duration = models.DurationField()
     distance = models.DecimalField(max_digits=6, decimal_places=2)
     actual_distance = models.DecimalField(null=True, max_digits=6, decimal_places=2)
