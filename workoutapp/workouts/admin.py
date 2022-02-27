@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Walk, Run
+
+
+@admin.register(Walk)
+class WalkAdmin(admin.ModelAdmin):
+    list_display = ['location', 'duration', 'distance']
+
+@admin.register(Run)
+class RunAdmin(admin.ModelAdmin):
+    list_display = ['location', 'duration', 'distance']
+
