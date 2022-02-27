@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from django.contrib.auth import views as auth_views
 
 from workouts import views
 
@@ -25,6 +26,10 @@ router.register(r'runs', views.RunViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.register, name='register'),
     path('', views.home, name='home'),
     # path('walk/<int:walk_id>/', views.walk_detail, name='walk_detail'),
     path('', include(router.urls)),

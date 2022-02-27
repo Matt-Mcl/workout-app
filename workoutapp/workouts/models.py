@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Walk(models.Model):
@@ -15,6 +16,7 @@ class Walk(models.Model):
     elevation_gain = models.IntegerField(null=True)
     total_kilocalories = models.IntegerField()
     average_heart_rate = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Run(models.Model):
@@ -32,3 +34,4 @@ class Run(models.Model):
     total_kilocalories = models.IntegerField()
     average_heart_rate = models.IntegerField()
     average_cadence = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
