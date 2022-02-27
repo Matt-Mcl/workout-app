@@ -1,7 +1,19 @@
 from django.shortcuts import render
 from django.http import Http404
+from rest_framework import viewsets
 
+from .serializers import WalkSerializer, RunSerializer
 from .models import Walk, Run
+
+
+class WalkViewSet(viewsets.ModelViewSet):
+    queryset = Walk.objects.all().order_by('distance')
+    serializer_class = WalkSerializer
+
+
+class RunViewSet(viewsets.ModelViewSet):
+    queryset = Run.objects.all().order_by('distance')
+    serializer_class = RunSerializer
 
 
 def home(request):
@@ -13,7 +25,6 @@ def home(request):
     })
 
 
-
 def walk_detail(request, walk_id):
     try:
         walk = Walk.objects.get(id=walk_id)
@@ -22,4 +33,3 @@ def walk_detail(request, walk_id):
     return render(request, 'walk_detail.html', {
         'walk': walk,
     })
-
