@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 
 class Walk(models.Model):
     LOCATION_CHOICES = [
@@ -15,6 +14,7 @@ class Walk(models.Model):
     elevation_gain = models.IntegerField(null=True)
     total_kilocalories = models.IntegerField()
     average_heart_rate = models.IntegerField()
+
 
 class Run(models.Model):
     LOCATION_CHOICES = [
