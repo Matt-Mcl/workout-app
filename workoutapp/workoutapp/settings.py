@@ -55,6 +55,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://*.localhost/*',
+    'http://*.127.0.0.1/*',
+    'http://*.climbing-app.co.uk/*'
+]
+
 ROOT_URLCONF = 'workoutapp.urls'
 
 TEMPLATES = [
