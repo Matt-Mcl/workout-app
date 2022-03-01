@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from rest_framework import viewsets
 
-from .serializers import WalkSerializer, RunSerializer
-from .models import Walk, Run
+from .serializers import WalkSerializer, RunSerializer, UserSerializer
+from .models import Walk, Run, User
 
 
 class WalkViewSet(viewsets.ModelViewSet):
@@ -17,6 +17,11 @@ class WalkViewSet(viewsets.ModelViewSet):
 class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.all().order_by('distance')
     serializer_class = RunSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 # def home(request):

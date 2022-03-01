@@ -23,6 +23,7 @@ from workouts import views
 router = routers.DefaultRouter()
 router.register(r'walks', views.WalkViewSet)
 router.register(r'runs', views.RunViewSet)
+router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
