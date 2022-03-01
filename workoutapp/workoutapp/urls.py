@@ -15,15 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
 from django.contrib.auth import views as auth_views
 
 from workouts import views
-
-router = routers.DefaultRouter()
-router.register(r'walks', views.WalkViewSet)
-router.register(r'runs', views.RunViewSet)
-router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,8 +25,10 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
+    path('walks/', views.WalkView.as_view(), name='walks'),
+    path('runs/', views.RunView.as_view(), name='runs'),
+    path('users/', views.UserView.as_view(), name='runs'),
     path('', views.home, name='home'),
     # path('walk/<int:walk_id>/', views.walk_detail, name='walk_detail'),
-    path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
