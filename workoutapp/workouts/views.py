@@ -7,7 +7,6 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
-from rest_framework_api_key.models import APIKey
 from rest_framework.response import Response
 from .helpers import views_helper
 
@@ -28,7 +27,7 @@ class WalkView(APIView):
     
     def post(self, request):
         walk = request.data
-        walk['user'] = get_user(request).id
+        walk['user'] = views_helper.get_user_data(request)[0].id
 
         serializer = WalkSerializer(data=walk, context={'request': request})
         if not serializer.is_valid():
@@ -52,7 +51,7 @@ class RunView(APIView):
     
     def post(self, request):
         run = request.data
-        run_module['user'] = get_user(request).id
+        run['user'] = views_helper.get_user_data(request)[0].id
 
         serializer = RunSerializer(data=run, context={'request': request})
         if not serializer.is_valid():
