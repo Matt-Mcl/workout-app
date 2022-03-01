@@ -4,11 +4,12 @@ from django.contrib.auth import login, authenticate, get_user
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
+from rest_framework_api_key.models import APIKey
 from rest_framework.response import Response
+from .helpers import views_helper
 
 from .serializers import WalkSerializer, RunSerializer, UserSerializer
 from .models import Walk, Run, User
@@ -17,7 +18,8 @@ class WalkView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
-        user = User.objects.filter(id=request.user.id)[0]
+        user = views_helper.get_user_data(request)[0]
+
         user_walks = Walk.objects.filter(user=user)
         if user.is_superuser:
             user_walks = Walk.objects.all()
@@ -40,7 +42,8 @@ class RunView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
-        user = User.objects.filter(id=request.user.id)[0]
+        user = views_helper.get_user_data(request)[0]
+
         user_runs = Run.objects.filter(user=user)
         if user.is_superuser:
             user_runs = Run.objects.all()
@@ -63,7 +66,7 @@ class UserView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
-        user = User.objects.filter(id=request.user.id)
+        user = views_helper.get_user_data(request)
         if user[0].is_superuser:
             user = User.objects.all()
         serializer = UserSerializer(user, many=True, context={'request': request})
@@ -98,3 +101,5 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
