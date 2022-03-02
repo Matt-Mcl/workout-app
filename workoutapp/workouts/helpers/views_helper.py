@@ -10,7 +10,7 @@ def get_user_data(request):
         user_name = APIKey.objects.get_from_key(key)
         user = User.objects.filter(username=user_name)
     else:
-        # Else jsut pull the user from the db
+        # Else just pull the user from the db
         user = User.objects.filter(id=request.user.id)
 
     return user

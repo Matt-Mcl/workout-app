@@ -1,17 +1,18 @@
 from runpy import run_module
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, get_user
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from rest_framework.views import APIView
+from rest_framework_api_key.models import APIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
 from .helpers import views_helper
 
-from .serializers import WalkSerializer, RunSerializer, UserSerializer
-from .models import Walk, Run, User
+from .serializers import *
+from .models import *
 
 class WalkView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
@@ -72,6 +73,33 @@ class UserView(APIView):
         return Response(serializer.data)
 
 
+class KeyView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = User.objects.filter(id=request.user.id)[0]
+
+        user_key = APIKey.objects.filter(name=user.username)
+        if user.is_superuser:
+            user_key = APIKey.objects.all()
+        serializer = KeySerializer(user_key, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        user = User.objects.filter(id=request.user.id)[0]
+
+        if APIKey.objects.filter(name=user.username):
+            return Response({f"invalid request: user already has an API key"}, status=400)
+
+        api_key, key = APIKey.objects.create_key(name=user.username)
+
+        return Response({
+            "success": "key created successfully." ,
+            "IMPORTANT": "Note this key down as it will not be shown again",
+            "key": key
+        })
+
+
 def walk_detail(request, walk_id):
     try:
         walk = Walk.objects.get(id=walk_id)
@@ -100,5 +128,4 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
-
 
