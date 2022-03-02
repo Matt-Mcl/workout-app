@@ -1,6 +1,5 @@
 from .models import Walk
 from django import forms
-from django.utils.dateparse import parse_duration
 
 
 class DateTimeInput(forms.widgets.DateTimeInput):
