@@ -100,16 +100,6 @@ class KeyView(APIView):
         })
 
 
-def walk_detail(request, walk_id):
-    try:
-        walk = Walk.objects.get(id=walk_id)
-    except Walk.DoesNotExist:
-        raise Http404('Walk not found')
-    return render(request, 'walk_detail.html', {
-        'walk': walk,
-    })
-
-
 @login_required
 def home(request):
     return render(request, "registration/success.html", {})

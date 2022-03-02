@@ -30,6 +30,5 @@ urlpatterns = [
     path('users/', views.UserView.as_view(), name='runs'),
     path('keys/', views.KeyView.as_view(), name='keys'),
     path('', views.home, name='home'),
-    # path('walk/<int:walk_id>/', views.walk_detail, name='walk_detail'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
