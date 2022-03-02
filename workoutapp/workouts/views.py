@@ -1,20 +1,46 @@
-from runpy import run_module
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework_api_key.models import APIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
-from .helpers import views_helper
+from django.shortcuts import redirect
+from django.contrib import messages
 
+from .helpers import views_helper
 from .serializers import *
 from .models import *
+from .forms import *
 
-class WalkView(APIView):
+
+@login_required
+def WalkFormView(request):
+
+    if request.method == "GET":
+        user = User.objects.filter(id=request.user.id)[0]
+        # Get walks ordered by newest first
+        user_walks = Walk.objects.filter(user=user).order_by("-start_time")
+
+        walk_form = WalkForm()
+        return render(request=request, template_name="workouts/walks.html", context={'walk_form': walk_form, 'walks': user_walks})
+
+    elif request.method == "POST":
+        user = User.objects.filter(id=request.user.id)[0]
+        walk_form = WalkForm(request.POST)
+        walk_form.instance.user = user
+        if walk_form.is_valid():
+            walk_form.save()
+
+        return redirect('/walks/')
+
+    else:
+        return Response({f"invalid request"}, status=400)
+
+
+class WalkAPIView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
@@ -38,7 +64,7 @@ class WalkView(APIView):
         return Response({f"success: \"{status}\" walk created successfully"})
 
 
-class RunView(APIView):
+class RunAPIView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
@@ -62,7 +88,7 @@ class RunView(APIView):
         return Response({f"success: \"{status}\" run created successfully"})
 
 
-class UserView(APIView):
+class UserAPIView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
@@ -118,4 +144,3 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
-

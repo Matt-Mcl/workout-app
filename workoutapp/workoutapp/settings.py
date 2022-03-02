@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'workouts',
     'rest_framework',
-    "rest_framework_api_key",
+    'rest_framework_api_key',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
