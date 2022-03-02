@@ -1,49 +1,61 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-        <title>Django ModelForms</title>
-        </head>
-        <body>
-                {% load crispy_forms_tags %}    
-                
-                <div class="container">
-                    <!--Django Model Form-->
-                    <h2 class="my-4">Add a new walk</h2>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                                {{walk_form|crispy}}
-                                <button class="btn btn-primary my-4" type="submit">Submit</button>
-                    </form>
-                    <!--Django Model-->
-                    <h2 class="my-4">Walks</h2>
-                    <div class="row">
-                        <table>
-                            {% for w in walks %}
-                                <h4>{{w.start_time}}</h4>
-                                <p>Location: {{w.get_location_display}}</p>
-                                <p>{{w.duration}}</p>
-                                <p>{{w.distance}}</p>
-                                <p>{{w.actual_distance}}</p>
-                                <p>{{w.active_kilocalories}}</p>
-                                <p>{{w.total_kilocalories}}</p>
-                                <p>{{w.elevation_gain}}</p>
-                                <p>{{w.average_heart_rate}}</p>
-                            {% empty %}
-                        </table>
-                        <p>No walks added.</p>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <title>Django ModelForms</title>
+    </head>
+    <body>
+        {% load crispy_forms_tags %}    
+        
+        <div class="container">
+            <!--Django Model Form-->
+            <h2 class="my-4">Add a new walk</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                        {{ walk_form|crispy }}
+                        <button class="btn btn-primary my-4" type="submit">Submit</button>
+            </form>
+            <!--Django Model-->
+            <h2 class="my-4">Walks</h2>
+            <div class="row">
+                <table class="table">
+                    <tr>
+                        {% for field in walk_form.fields %}
+                            <th>{{ field | title }}</th>
                         {% endfor %}
-                    </div>
-                </div>
+                    </tr>
+                    {% for w in walks %}
+                        <tr>
+                        <td>{{ w.start_time }}</td>
+                        <td>{{ w.get_location_display }}</td>
+                        <td>{{ w.duration }}</td>
+                        <td>{{ w.distance }} km</td>
+                        {% if w.actual_distance %}
+                            <td>{{ w.actual_distance }} km</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td>{{ w.active_kilocalories }}</td>
+                        <td>{{ w.total_kilocalories }}</td>
+                        {% if w.elevation_gain %}
+                            <td>{{ w.elevation_gain }} km</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td>{{ w.average_heart_rate }} BPM</td>
+                        </tr>
+                    {% empty %}
+                    <p>No walks added.</p>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
 
-        <!-- Option 1: Bootstrap Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/html-duration-picker@latest/dist/html-duration-picker.min.js"></script>
-        </body>
+    </body>
 </html>
