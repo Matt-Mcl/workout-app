@@ -1,4 +1,4 @@
-bash ./prodstop.sh > /dev/null
+#!/bin/bash
 
 source "../venv/bin/activate"
 
