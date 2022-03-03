@@ -155,10 +155,13 @@ def EditRun(request, run_id):
             return HttpResponse(content="invalid request", status=400)
     
     elif request.method == "POST":
-        run_form = RunForm(request.POST, instance=run)
-        run_form.instance.user = user
-        if run_form.is_valid():
-            run_form.save()
+        if request.POST.get('delete') and user == run.user:
+            run.delete()
+        else:
+            run_form = RunForm(request.POST, instance=run)
+            run_form.instance.user = user
+            if run_form.is_valid():
+                run_form.save()
 
         return redirect('/runs/')
 
