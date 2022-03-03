@@ -48,18 +48,22 @@ def EditWalk(request, walk_id):
     if request.method == "GET":
         if user == walk.user:
             walk_form = WalkForm(instance=walk)
-            return render(request=request, template_name="workouts/walks.html", context={'walk_form': walk_form})
+            return render(request=request, template_name="workouts/edit_walk.html", context={'walk_form': walk_form})
 
         else:
             return HttpResponse(content="invalid request", status=400)
     
     elif request.method == "POST":
-        walk_form = WalkForm(request.POST, instance=walk)
-        walk_form.instance.user = user
-        if walk_form.is_valid():
-            walk_form.save()
+        if request.POST.get('delete') and user == walk.user:
+            walk.delete()
+        else:
+            walk_form = WalkForm(request.POST, instance=walk)
+            walk_form.instance.user = user
+            if walk_form.is_valid():
+                walk_form.save()
 
         return redirect('/walks/')
+
 
     else:
         return HttpResponse(content="invalid request", status=400)
@@ -145,7 +149,7 @@ def EditRun(request, run_id):
     if request.method == "GET":
         if user == run.user:
             run_form = RunForm(instance=run)
-            return render(request=request, template_name="workouts/runs.html", context={'run_form': run_form})
+            return render(request=request, template_name="workouts/edit_run.html", context={'run_form': run_form})
 
         else:
             return HttpResponse(content="invalid request", status=400)
