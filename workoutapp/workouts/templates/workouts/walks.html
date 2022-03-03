@@ -45,12 +45,12 @@
                         {% else %}
                             <td></td>
                         {% endif %}
-                        {% if w.active_kilocalories %}
-                            <td>{{ w.active_kilocalories }} kcal</td>
+                        <td>{{ w.active_kilocalories }} kcal</td>
+                        {% if w.total_kilocalories %}
+                            <td>{{ w.total_kilocalories }} kcal</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ w.total_kilocalories }} kcal</td>
                         {% if w.elevation_gain %}
                             <td>{{ w.elevation_gain }} m</td>
                         {% else %}
