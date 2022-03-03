@@ -33,7 +33,11 @@
                     {% for r in runs %}
                         <tr>
                         <td>{{ r.start_time }}</td>
-                        <td>{{ r.get_location_display }}</td>
+                        {% if r.get_location_display %}
+                            <td>{{ r.get_location_display }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                         <td>{{ r.duration }}</td>
                         <td>{{ r.distance }} km</td>
                         {% if r.actual_distance %}
@@ -41,15 +45,27 @@
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ r.active_kilocalories }}</td>
-                        <td>{{ r.total_kilocalories }}</td>
+                        {% if r.active_kilocalories %}
+                            <td>{{ r.active_kilocalories }} kcal</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td>{{ r.total_kilocalories }} kcal</td>
                         {% if r.elevation_gain %}
                             <td>{{ r.elevation_gain }} m</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ r.average_heart_rate }} BPM</td>
-                        <td>{{ r.average_cadence }} SPM</td>
+                        {% if r.average_heart_rate %}
+                            <td>{{ r.average_heart_rate }} BPM</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        {% if r.average_cadence %}
+                            <td>{{ r.average_cadence }} SPM</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                         <td><a href="/runs/edit/{{r.id}}/">/runs/edit/{{r.id}}/</a></td>
                         </tr>
                     {% empty %}

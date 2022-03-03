@@ -33,7 +33,11 @@
                     {% for w in walks %}
                         <tr>
                         <td>{{ w.start_time }}</td>
-                        <td>{{ w.get_location_display }}</td>
+                        {% if w.get_location_display %}
+                            <td>{{ w.get_location_display }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                         <td>{{ w.duration }}</td>
                         <td>{{ w.distance }} km</td>
                         {% if w.actual_distance %}
@@ -41,14 +45,22 @@
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ w.active_kilocalories }}</td>
-                        <td>{{ w.total_kilocalories }}</td>
+                        {% if w.active_kilocalories %}
+                            <td>{{ w.active_kilocalories }} kcal</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td>{{ w.total_kilocalories }} kcal</td>
                         {% if w.elevation_gain %}
                             <td>{{ w.elevation_gain }} m</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ w.average_heart_rate }} BPM</td>
+                        {% if w.average_heart_rate %}
+                            <td>{{ w.average_heart_rate }} BPM</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                         <td><a href="/walks/edit/{{w.id}}/">/walks/edit/{{w.id}}/</a></td>
                         </tr>
                     {% empty %}
