@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework_api_key.models import APIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
-from django.shortcuts import redirect
-from django.contrib import messages
 
 from .helpers import views_helper
 from .serializers import *
@@ -37,7 +37,32 @@ def WalkFormView(request):
         return redirect('/walks/')
 
     else:
-        return Response({f"invalid request"}, status=400)
+        return HttpResponse(content="invalid request", status=400)
+
+
+@login_required
+def EditWalk(request, walk_id):
+    user = User.objects.filter(id=request.user.id)[0]
+    walk = Walk.objects.filter(id=walk_id)[0]
+
+    if request.method == "GET":
+        if user == walk.user:
+            walk_form = WalkForm(instance=walk)
+            return render(request=request, template_name="workouts/walks.html", context={'walk_form': walk_form})
+
+        else:
+            return HttpResponse(content="invalid request", status=400)
+    
+    elif request.method == "POST":
+        walk_form = WalkForm(request.POST, instance=walk)
+        walk_form.instance.user = user
+        if walk_form.is_valid():
+            walk_form.save()
+
+        return redirect('/walks/')
+
+    else:
+        return HttpResponse(content="invalid request", status=400)
 
 
 class WalkAPIView(APIView):
@@ -86,6 +111,55 @@ class RunAPIView(APIView):
         status = serializer.save()
 
         return Response({f"success: \"{status}\" run created successfully"})
+
+
+@login_required
+def RunFormView(request):
+
+    if request.method == "GET":
+        user = User.objects.filter(id=request.user.id)[0]
+        # Get runs ordered by newest first
+        user_runs = Run.objects.filter(user=user).order_by("-start_time")
+
+        run_form = RunForm()
+        return render(request=request, template_name="workouts/runs.html", context={'run_form': run_form, 'runs': user_runs})
+
+    elif request.method == "POST":
+        user = User.objects.filter(id=request.user.id)[0]
+        run_form = RunForm(request.POST)
+        run_form.instance.user = user
+        if run_form.is_valid():
+            run_form.save()
+
+        return redirect('/runs/')
+
+    else:
+        return HttpResponse(content="invalid request", status=400)
+
+
+@login_required
+def EditRun(request, run_id):
+    user = User.objects.filter(id=request.user.id)[0]
+    run = Run.objects.filter(id=run_id)[0]
+
+    if request.method == "GET":
+        if user == run.user:
+            run_form = RunForm(instance=run)
+            return render(request=request, template_name="workouts/runs.html", context={'run_form': run_form})
+
+        else:
+            return HttpResponse(content="invalid request", status=400)
+    
+    elif request.method == "POST":
+        run_form = RunForm(request.POST, instance=run)
+        run_form.instance.user = user
+        if run_form.is_valid():
+            run_form.save()
+
+        return redirect('/runs/')
+
+    else:
+        return HttpResponse(content="invalid request", status=400)
 
 
 class UserAPIView(APIView):

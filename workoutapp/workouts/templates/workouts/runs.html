@@ -13,45 +13,46 @@
         
         <div class="container">
             <!--Django Model Form-->
-            <h2 class="my-4">Add a new walk</h2>
+            <h2 class="my-4">Add a new run</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ walk_form | crispy }}
+                {{ run_form | crispy }}
                 <button class="btn btn-primary my-4" type="submit">Submit</button>
             </form>
             <!--Django Model-->
-            <h2 class="my-4">Walks</h2>
+            <h2 class="my-4">Runs</h2>
             <div class="row">
                 <table class="table">
                     <tr>
-                        {% for field in walk_form.fields %}
+                        {% for field in run_form.fields %}
                             <th>{{ field | title }}</th>
                         {% endfor %}
                         <th>Edit</th>
                     </tr>
-                    {% for w in walks %}
+                    {% for r in runs %}
                         <tr>
-                        <td>{{ w.start_time }}</td>
-                        <td>{{ w.get_location_display }}</td>
-                        <td>{{ w.duration }}</td>
-                        <td>{{ w.distance }} km</td>
-                        {% if w.actual_distance %}
-                            <td>{{ w.actual_distance }} km</td>
+                        <td>{{ r.start_time }}</td>
+                        <td>{{ r.get_location_display }}</td>
+                        <td>{{ r.duration }}</td>
+                        <td>{{ r.distance }} km</td>
+                        {% if r.actual_distance %}
+                            <td>{{ r.actual_distance }} km</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ w.active_kilocalories }}</td>
-                        <td>{{ w.total_kilocalories }}</td>
-                        {% if w.elevation_gain %}
-                            <td>{{ w.elevation_gain }} m</td>
+                        <td>{{ r.active_kilocalories }}</td>
+                        <td>{{ r.total_kilocalories }}</td>
+                        {% if r.elevation_gain %}
+                            <td>{{ r.elevation_gain }} m</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ w.average_heart_rate }} BPM</td>
-                        <td><a href="/walks/edit/{{w.id}}/">/walks/edit/{{w.id}}/</a></td>
+                        <td>{{ r.average_heart_rate }} BPM</td>
+                        <td>{{ r.average_cadence }} SPM</td>
+                        <td><a href="/runs/edit/{{r.id}}/">/runs/edit/{{r.id}}/</a></td>
                         </tr>
                     {% empty %}
-                    <p>No walks added.</p>
+                    <p>No runs added.</p>
                     {% endfor %}
                 </table>
             </div>
