@@ -32,7 +32,7 @@
                     </tr>
                     {% for w in walks %}
                         <tr>
-                        <td>{{ w.start_time }}</td>
+                        <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
                         {% if w.get_location_display %}
                             <td>{{ w.get_location_display }}</td>
                         {% else %}
@@ -61,7 +61,7 @@
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td><a href="/walks/edit/{{w.id}}/">/walks/edit/{{w.id}}/</a></td>
+                        <td><a href="/walks/edit/{{ w.id }}/">Edit</a></td>
                         </tr>
                     {% empty %}
                     <p>No walks added.</p>
