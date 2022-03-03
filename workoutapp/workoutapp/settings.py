@@ -28,8 +28,7 @@ try:
 except KeyError as e:
     raise RuntimeError("Could not find a SECRET_KEY in environment") from e
 
-ALLOWED_HOSTS = ["workout.climbing-app.co.uk"]
-
+ALLOWED_HOSTS = ["workout.climbing-app.co.uk", "localhost"]
 
 # Application definition
 
@@ -136,6 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = './static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -146,4 +146,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
-API_KEY_CUSTOM_HEADER = "HTTP_API_KEY"
+API_KEY_CUSTOM_HEADER = 'HTTP_API_KEY'

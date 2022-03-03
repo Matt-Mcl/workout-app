@@ -1,3 +1,5 @@
+bash ./prodstop.sh > /dev/null
+
 source "../venv/bin/activate"
 
 sudo mkdir -pv /var/{log,run}/gunicorn/ > /dev/null
