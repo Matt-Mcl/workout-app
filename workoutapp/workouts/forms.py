@@ -2,24 +2,12 @@ from .models import *
 from django import forms
 
 
-class WalkForm(forms.ModelForm):
+class WorkoutForm(forms.ModelForm):
 
     class Meta:
-        model = Walk
+        model = Workout
         
-        fields = ('start_time', 'location', 'duration', 'distance', 'actual_distance', 'active_kilocalories', 'total_kilocalories', 'elevation_gain', 'average_heart_rate')
-
-        widgets = {
-            'start_time': forms.DateTimeInput(format=('%Y-%m-%dT%H:%M:%S'), attrs={'type': 'datetime-local'}),
-            'duration': forms.TextInput(attrs={"class": "html-duration-picker"}),
-        }
-
-class RunForm(forms.ModelForm):
-
-    class Meta:
-        model = Run
-        
-        fields = ('start_time', 'location', 'duration', 'distance', 'actual_distance', 'active_kilocalories', 'total_kilocalories', 'elevation_gain', 'average_heart_rate', 'average_cadence')
+        fields = ('name', 'location', 'start_time', 'duration', 'active_kilocalories', 'total_kilocalories', 'average_heart_rate', 'max_heart_rate', 'distance', 'actual_distance', 'elevation_gain', 'step_cadence', 'temperature', 'humidity', 'intensity', 'flights_climbed', 'step_count', 'swim_cadence', 'total_swimming_stroke_count')
 
         widgets = {
             'start_time': forms.DateTimeInput(format=('%Y-%m-%dT%H:%M:%S'), attrs={'type': 'datetime-local'}),
