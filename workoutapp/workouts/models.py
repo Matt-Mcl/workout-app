@@ -7,7 +7,8 @@ class Workout(models.Model):
         ('O', 'Outdoor'),
         ('I', 'Indoor')
     ]
-    location = models.CharField(null=True, blank=True, max_length=1, choices=LOCATION_CHOICES)
+    name = models.CharField(max_length=200)
+    location = models.CharField(max_length=1, choices=LOCATION_CHOICES)
     start_time = models.DateTimeField(unique=True)
     duration = models.DurationField()
     active_kilocalories = models.IntegerField()
