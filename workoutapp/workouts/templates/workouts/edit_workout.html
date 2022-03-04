@@ -6,17 +6,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Workout App Edit Run</title>
+    <title>Workout App Edit Workout</title>
     </head>
     <body>
         {% load crispy_forms_tags %}
         
         <div class="container">
             <!--Django Model Form-->
-            <h2 class="my-4">Editing run</h2>
+            <h2 class="my-4">Editing workout</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ run_form | crispy }}
+                {{ workout_form | crispy }}
                 <button class="btn btn-primary my-4" type="submit">Submit</button>
                 <br>
                 <button class="btn btn-danger my-4" value={{True}} name="delete" onclick="return confirmation()">Delete</button>

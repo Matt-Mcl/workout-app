@@ -6,69 +6,64 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Workout App Runs</title>
+    <title>Workout App Workouts</title>
     </head>
     <body>
         {% load crispy_forms_tags %}
         
         <div class="container">
             <!--Django Model Form-->
-            <h2 class="my-4">Add a new run</h2>
+            <h2 class="my-4">Add a new workout</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ run_form | crispy }}
+                {{ workout_form | crispy }}
                 <button class="btn btn-primary my-4" type="submit">Submit</button>
             </form>
             <!--Django Model-->
-            <h2 class="my-4">Runs</h2>
+            <h2 class="my-4">Workout</h2>
             <div class="row">
                 <table class="table">
                     <tr>
-                        {% for field in run_form.fields %}
+                        {% for field in workout_form.fields %}
                             <th>{{ field | title }}</th>
                         {% endfor %}
                         <th>Edit</th>
                     </tr>
-                    {% for r in runs %}
+                    {% for w in workout %}
                         <tr>
-                        <td>{{ r.start_time | date:"d/m/Y, H:i" }}</td>
-                        {% if r.get_location_display %}
-                            <td>{{ r.get_location_display }}</td>
+                        <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
+                        {% if w.get_location_display %}
+                            <td>{{ w.get_location_display }}</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ r.duration }}</td>
-                        <td>{{ r.distance }} km</td>
-                        {% if r.actual_distance %}
-                            <td>{{ r.actual_distance }} km</td>
+                        <td>{{ w.duration }}</td>
+                        <td>{{ w.distance }} km</td>
+                        {% if w.actual_distance %}
+                            <td>{{ w.actual_distance }} km</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td>{{ r.active_kilocalories }} kcal</td>
-                        {% if r.total_kilocalories %}
-                            <td>{{ r.total_kilocalories }} kcal</td>
+                        <td>{{ w.active_kilocalories }} kcal</td>
+                        {% if w.total_kilocalories %}
+                            <td>{{ w.total_kilocalories }} kcal</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        {% if r.elevation_gain %}
-                            <td>{{ r.elevation_gain }} m</td>
+                        {% if w.elevation_gain %}
+                            <td>{{ w.elevation_gain }} m</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        {% if r.average_heart_rate %}
-                            <td>{{ r.average_heart_rate }} BPM</td>
+                        {% if w.average_heart_rate %}
+                            <td>{{ w.average_heart_rate }} BPM</td>
                         {% else %}
                             <td></td>
                         {% endif %}
-                        {% if r.average_cadence %}
-                            <td>{{ r.average_cadence }} SPM</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        <td><a href="/runs/edit/{{ r.id }}/">Edit</a></td>
+                        <td><a href="/workouts/edit/{{ w.id }}/">Edit</a></td>
                         </tr>
                     {% empty %}
-                    <p>No runs added.</p>
+                    <p>No workout added.</p>
                     {% endfor %}
                 </table>
             </div>

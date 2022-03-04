@@ -17,156 +17,80 @@ from .forms import *
 
 
 @login_required
-def WalkFormView(request):
+def WorkoutFormView(request):
 
     if request.method == "GET":
         user = User.objects.filter(id=request.user.id)[0]
-        # Get walks ordered by newest first
-        user_walks = Walk.objects.filter(user=user).order_by("-start_time")
+        # Get workouts ordered by newest first
+        user_workouts = Workout.objects.filter(user=user).order_by("-start_time")
 
-        walk_form = WalkForm()
-        return render(request=request, template_name="workouts/walks.html", context={'walk_form': walk_form, 'walks': user_walks})
+        workout_form = WorkoutForm()
+        return render(request=request, template_name="workouts/workouts.html", context={'workout_form': workout_form, 'workout': user_workouts})
 
     elif request.method == "POST":
         user = User.objects.filter(id=request.user.id)[0]
-        walk_form = WalkForm(request.POST)
-        walk_form.instance.user = user
-        if walk_form.is_valid():
-            walk_form.save()
+        workout_form = WorkoutForm(request.POST)
+        workout_form.instance.user = user
+        if workout_form.is_valid():
+            workout_form.save()
 
-        return redirect('/walks/')
+        return redirect('/workouts/')
 
     else:
         return HttpResponse(content="invalid request", status=400)
 
 
 @login_required
-def EditWalk(request, walk_id):
+def EditWorkout(request, workout_id):
     user = User.objects.filter(id=request.user.id)[0]
-    walk = Walk.objects.filter(id=walk_id)[0]
+    workout = Workout.objects.filter(id=workout_id)[0]
 
     if request.method == "GET":
-        if user == walk.user:
-            walk_form = WalkForm(instance=walk)
-            return render(request=request, template_name="workouts/edit_walk.html", context={'walk_form': walk_form})
+        if user == workout.user:
+            workout_form = WorkoutForm(instance=workout)
+            return render(request=request, template_name="workouts/edit_workout.html", context={'workout_form': workout_form})
 
         else:
             return HttpResponse(content="invalid request", status=400)
     
     elif request.method == "POST":
-        if request.POST.get('delete') and user == walk.user:
-            walk.delete()
+        if request.POST.get('delete') and user == workout.user:
+            workout.delete()
         else:
-            walk_form = WalkForm(request.POST, instance=walk)
-            walk_form.instance.user = user
-            if walk_form.is_valid():
-                walk_form.save()
+            workout_form = WorkoutForm(request.POST, instance=workout)
+            workout_form.instance.user = user
+            if workout_form.is_valid():
+                workout_form.save()
 
-        return redirect('/walks/')
+        return redirect('/workouts/')
 
 
     else:
         return HttpResponse(content="invalid request", status=400)
 
 
-class WalkAPIView(APIView):
+class WorkoutAPIView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]
 
     def get(self, request):
         user = views_helper.get_user_data(request)[0]
 
-        user_walks = Walk.objects.filter(user=user)
+        user_workouts = Workout.objects.filter(user=user)
         if user.is_superuser:
-            user_walks = Walk.objects.all()
-        serializer = WalkSerializer(user_walks, many=True, context={'request': request})
+            user_workouts = Workout.objects.all()
+        serializer = WorkoutSerializer(user_workouts, many=True, context={'request': request})
         return Response(serializer.data)
     
     def post(self, request):
-        walk = request.data
-        walk['user'] = views_helper.get_user_data(request)[0].id
+        workout = request.data
+        workout['user'] = views_helper.get_user_data(request)[0].id
 
-        serializer = WalkSerializer(data=walk, context={'request': request})
+        serializer = WorkoutSerializer(data=workout, context={'request': request})
         if not serializer.is_valid():
             return Response({f"invalid request"}, status=400)
         status = serializer.save()
 
-        return Response({f"success: \"{status}\" walk created successfully"})
-
-
-class RunAPIView(APIView):
-    permission_classes = [HasAPIKey | IsAuthenticated]
-
-    def get(self, request):
-        user = views_helper.get_user_data(request)[0]
-
-        user_runs = Run.objects.filter(user=user)
-        if user.is_superuser:
-            user_runs = Run.objects.all()
-        serializer = RunSerializer(user_runs, many=True, context={'request': request})
-        return Response(serializer.data)
-    
-    def post(self, request):
-        run = request.data
-        run['user'] = views_helper.get_user_data(request)[0].id
-
-        serializer = RunSerializer(data=run, context={'request': request})
-        if not serializer.is_valid():
-            return Response({f"invalid request"}, status=400)
-        status = serializer.save()
-
-        return Response({f"success: \"{status}\" run created successfully"})
-
-
-@login_required
-def RunFormView(request):
-
-    if request.method == "GET":
-        user = User.objects.filter(id=request.user.id)[0]
-        # Get runs ordered by newest first
-        user_runs = Run.objects.filter(user=user).order_by("-start_time")
-
-        run_form = RunForm()
-        return render(request=request, template_name="workouts/runs.html", context={'run_form': run_form, 'runs': user_runs})
-
-    elif request.method == "POST":
-        user = User.objects.filter(id=request.user.id)[0]
-        run_form = RunForm(request.POST)
-        run_form.instance.user = user
-        if run_form.is_valid():
-            run_form.save()
-
-        return redirect('/runs/')
-
-    else:
-        return HttpResponse(content="invalid request", status=400)
-
-
-@login_required
-def EditRun(request, run_id):
-    user = User.objects.filter(id=request.user.id)[0]
-    run = Run.objects.filter(id=run_id)[0]
-
-    if request.method == "GET":
-        if user == run.user:
-            run_form = RunForm(instance=run)
-            return render(request=request, template_name="workouts/edit_run.html", context={'run_form': run_form})
-
-        else:
-            return HttpResponse(content="invalid request", status=400)
-    
-    elif request.method == "POST":
-        if request.POST.get('delete') and user == run.user:
-            run.delete()
-        else:
-            run_form = RunForm(request.POST, instance=run)
-            run_form.instance.user = user
-            if run_form.is_valid():
-                run_form.save()
-
-        return redirect('/runs/')
-
-    else:
-        return HttpResponse(content="invalid request", status=400)
+        return Response({f"success: \"{status}\" workout created successfully"})
 
 
 class UserAPIView(APIView):

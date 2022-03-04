@@ -7,7 +7,7 @@ from .models import Workout, User
 class WorkoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workout
-        fields = ('location', 'start_time', 'duration', 'active_kilocalories', 'total_kilocalories', 'average_heart_rate', 'max_heart_rate', 'distance', 'actual_distance', 'elevation_gain', 'step_cadence', 'temperature', 'humidity', 'intensity', 'flights_climbed', 'step_count', 'swim_cadence', 'total_swimming_stroke_count', 'user')
+        fields = ('name', 'location', 'start_time', 'duration', 'active_kilocalories', 'total_kilocalories', 'average_heart_rate', 'max_heart_rate', 'distance', 'actual_distance', 'elevation_gain', 'step_cadence', 'temperature', 'humidity', 'intensity', 'flights_climbed', 'step_count', 'swim_cadence', 'total_swimming_stroke_count', 'user')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
