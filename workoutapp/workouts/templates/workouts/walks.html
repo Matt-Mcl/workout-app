@@ -14,11 +14,22 @@
         <div class="container">
             <!--Django Model Form-->
             <h2 class="my-4">Add a new walk</h2>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ walk_form | crispy }}
-                <button class="btn btn-primary my-4" type="submit">Submit</button>
-            </form>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-auto">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ walk_form | crispy }}
+                            <button class="btn btn-primary my-4" type="submit">Submit</button>
+                        </form>
+                    </div>
+                    <div class="col-lg-auto" style="background-color:#f0f0f0;">
+                        <canvas width='1000', height='500'>
+                            <p>test</p>
+                        </canvas>
+                    </div>
+                </div>
+            </div>
             <!--Django Model-->
             <h2 class="my-4">Walks</h2>
             <div class="row">
