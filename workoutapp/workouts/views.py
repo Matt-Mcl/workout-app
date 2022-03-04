@@ -209,8 +209,8 @@ class KeyView(APIView):
 
 @login_required
 def home(request):
-    return render(request, "registration/success.html", {})
- 
+    return render(request, "registration/success.html")
+
 
 def register(request):
     if request.method == 'POST':
