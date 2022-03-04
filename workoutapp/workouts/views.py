@@ -88,9 +88,8 @@ class WorkoutAPIView(APIView):
             workouts = views_helper.parse_json_data(request, user_id)
             for w in workouts:
                 serializer = WorkoutSerializer(data=w, context={'request': request})
-                if not serializer.is_valid():
-                    return Response({f"{w} is invalid"}, status=400)
-                status = serializer.save()
+                if serializer.is_valid():
+                    status = serializer.save()
         else:
             workout = request.data
             workout['user'] = user_id
