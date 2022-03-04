@@ -12,6 +12,50 @@
         {% load crispy_forms_tags %}
         
         <div class="container">
+            <!--Django Model-->
+            <h2 class="my-4">Workout</h2>
+            <div class="row">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Start Time</th>
+                        <th>Duration</th>
+                        <th>Active kilocalories</th>
+                        <th>Total kilocalories</th>
+                        <th>Average heart rate</th>
+                        <th>Max heart rate</th>
+                        <th>Distance</th>
+                        <th>Actual distance</th>
+                        <th>Edit</th>
+                    </tr>
+                    {% for w in workout %}
+                        <tr>
+                            <td>{{ w.name }}</td>
+                            <td>{{ w.get_location_display }}</td>
+                            <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
+                            <td>{{ w.duration }}</td>
+                            <td>{{ w.active_kilocalories }} kcal</td>
+                            <td>{{ w.total_kilocalories }} kcal</td>
+                            <td>{{ w.average_heart_rate }} BPM</td>
+                            <td>{{ w.max_heart_rate }} BPM</td>
+                            {% if w.distance %}
+                                <td>{{ w.distance }} km</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            {% if w.actual_distance %}
+                                <td>{{ w.actual_distance }} km</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            <td><a href="/workouts/edit/{{ w.id }}/">Edit</a></td>
+                        </tr>
+                    {% empty %}
+                    <p>No workout added.</p>
+                    {% endfor %}
+                </table>
+            </div>
             <!--Django Model Form-->
             <h2 class="my-4">Add a new workout</h2>
             <form method="post" enctype="multipart/form-data">
@@ -19,54 +63,6 @@
                 {{ workout_form | crispy }}
                 <button class="btn btn-primary my-4" type="submit">Submit</button>
             </form>
-            <!--Django Model-->
-            <h2 class="my-4">Workout</h2>
-            <div class="row">
-                <table class="table">
-                    <tr>
-                        {% for field in workout_form.fields %}
-                            <th>{{ field | title }}</th>
-                        {% endfor %}
-                        <th>Edit</th>
-                    </tr>
-                    {% for w in workout %}
-                        <tr>
-                        <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
-                        {% if w.get_location_display %}
-                            <td>{{ w.get_location_display }}</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        <td>{{ w.duration }}</td>
-                        <td>{{ w.distance }} km</td>
-                        {% if w.actual_distance %}
-                            <td>{{ w.actual_distance }} km</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        <td>{{ w.active_kilocalories }} kcal</td>
-                        {% if w.total_kilocalories %}
-                            <td>{{ w.total_kilocalories }} kcal</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        {% if w.elevation_gain %}
-                            <td>{{ w.elevation_gain }} m</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        {% if w.average_heart_rate %}
-                            <td>{{ w.average_heart_rate }} BPM</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        <td><a href="/workouts/edit/{{ w.id }}/">Edit</a></td>
-                        </tr>
-                    {% empty %}
-                    <p>No workout added.</p>
-                    {% endfor %}
-                </table>
-            </div>
         </div>
     </body>
 </html>

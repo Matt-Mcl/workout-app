@@ -82,13 +82,22 @@ class WorkoutAPIView(APIView):
         return Response(serializer.data)
     
     def post(self, request):
-        workout = request.data
-        workout['user'] = views_helper.get_user_data(request)[0].id
+        user_id = views_helper.get_user_data(request)[0].id
 
-        serializer = WorkoutSerializer(data=workout, context={'request': request})
-        if not serializer.is_valid():
-            return Response({f"invalid request"}, status=400)
-        status = serializer.save()
+        if "HTTP_AUTO_EXPORT" in request.META:
+            workouts = views_helper.parse_json_data(request, user_id)
+            for w in workouts:
+                serializer = WorkoutSerializer(data=w, context={'request': request})
+                if not serializer.is_valid():
+                    return Response({f"{w} is invalid"}, status=400)
+                status = serializer.save()
+        else:
+            workout = request.data
+            workout['user'] = user_id
+            serializer = WorkoutSerializer(data=workout, context={'request': request})
+            if not serializer.is_valid():
+                return Response({f"invalid request"}, status=400)
+            status = serializer.save()
 
         return Response({f"success: \"{status}\" workout created successfully"})
 
