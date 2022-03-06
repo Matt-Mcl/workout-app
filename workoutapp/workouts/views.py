@@ -83,25 +83,25 @@ class WorkoutAPIView(APIView):
     
     def post(self, request):
         user_id = views_helper.get_user_data(request)[0].id
-        status = None
+        status = []
 
         if "HTTP_AUTO_EXPORT" in request.META:
             workouts = views_helper.parse_json_data(request, user_id)
             for w in workouts:
                 serializer = WorkoutSerializer(data=w, context={'request': request})
                 if serializer.is_valid():
-                    status = serializer.save()
+                    status.append(serializer.save())
             if not status:
-                return Response({f"pass: no workouts created"})
+                return Response({f"success: no workouts created"})
         else:
             workout = request.data
             workout['user'] = user_id
             serializer = WorkoutSerializer(data=workout, context={'request': request})
             if not serializer.is_valid():
-                return Response({f"invalid request"}, status=400)
+                return Response({f"error: invalid request"}, status=400)
             status = serializer.save()
 
-        return Response({f"success: {status} workout created successfully"})
+        return Response({f"success: {status} workout(s) created successfully"})
 
 
 class UserAPIView(APIView):
@@ -131,7 +131,7 @@ class KeyView(APIView):
         user = User.objects.filter(id=request.user.id)[0]
 
         if APIKey.objects.filter(name=user.username):
-            return Response({f"invalid request: user already has an API key"}, status=400)
+            return Response({f"error: user already has an API key"}, status=400)
 
         api_key, key = APIKey.objects.create_key(name=user.username)
 
