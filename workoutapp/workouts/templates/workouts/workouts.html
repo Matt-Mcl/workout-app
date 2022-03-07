@@ -29,7 +29,7 @@
                         <th></th>
                     </tr>
                     {% for w in workout %}
-                        <tr>
+                        <tr title="{{ w.notes }}">
                             <td>{{ w.name }}</td>
                             <td>{{ w.get_location_display }}</td>
                             <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
