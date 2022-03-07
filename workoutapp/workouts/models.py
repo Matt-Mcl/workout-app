@@ -26,5 +26,6 @@ class Workout(models.Model):
     step_count = models.IntegerField(null=True, blank=True)
     swim_cadence = models.IntegerField(null=True, blank=True)
     total_swimming_stroke_count = models.IntegerField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
