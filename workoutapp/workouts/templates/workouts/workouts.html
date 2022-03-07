@@ -22,12 +22,11 @@
                         <th>Start Time</th>
                         <th>Duration</th>
                         <th>Active kilocalories</th>
-                        <th>Total kilocalories</th>
                         <th>Average heart rate</th>
                         <th>Max heart rate</th>
                         <th>Distance</th>
                         <th>Actual distance</th>
-                        <th>Edit</th>
+                        <th></th>
                     </tr>
                     {% for w in workout %}
                         <tr>
@@ -36,7 +35,6 @@
                             <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
                             <td>{{ w.duration }}</td>
                             <td>{{ w.active_kilocalories }} kcal</td>
-                            <td>{{ w.total_kilocalories }} kcal</td>
                             <td>{{ w.average_heart_rate }} BPM</td>
                             <td>{{ w.max_heart_rate }} BPM</td>
                             {% if w.distance %}
