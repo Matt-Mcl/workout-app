@@ -9,6 +9,7 @@ from rest_framework_api_key.models import APIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
+from datetime import timedelta
 
 from .helpers import views_helper
 from .serializers import *
@@ -57,10 +58,15 @@ def EditWorkout(request, workout_id):
         if request.POST.get('delete') and user == workout.user:
             workout.delete()
         else:
+            # Retrieve seconds if present
+            seconds = timedelta(seconds=workout.start_time.second)
             workout_form = WorkoutForm(request.POST, instance=workout)
-            workout_form.instance.user = user
             if workout_form.is_valid():
-                workout_form.save()
+                modified_workout = workout_form.save(commit=False)
+                modified_workout.user = user
+                # Add seconds back on
+                modified_workout.start_time += seconds
+                modified_workout.save()
 
         return redirect('/workouts/')
 
