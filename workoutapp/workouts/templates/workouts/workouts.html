@@ -1,10 +1,12 @@
 {% extends 'registration/logged_in_base.html' %}
 {% block content2 %}
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'workouts.css' %}"></link>
 
     <title>Workout App Workouts</title>
     </head>
@@ -29,8 +31,12 @@
                         <th></th>
                     </tr>
                     {% for w in workout %}
-                        <tr title="{{ w.notes }}">
-                            <td>{{ w.name }}</td>
+                        <tr>
+                            {% if w.notes %}
+                                <td id="tooltip1"><a style="border-bottom: 1px dotted #000;">{{ w.name }}<span>{{ w.notes }}</span></a></td>
+                            {% else %}
+                                <td>{{ w.name }}</td>
+                            {% endif %}
                             <td>{{ w.get_location_display }}</td>
                             <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
                             <td>{{ w.duration }}</td>
