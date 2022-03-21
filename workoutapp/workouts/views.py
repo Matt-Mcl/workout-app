@@ -27,17 +27,35 @@ def WorkoutFormView(request):
         user_workouts = Workout.objects.filter(user=user).order_by("-start_time")
 
         this_page = request.GET.get("page", 1)
-        paginated_workouts = Paginator(user_workouts, 15)
+        paginated_workouts = Paginator(user_workouts, 10)
 
         try:
             page_workouts = paginated_workouts.page(this_page)
-        except PageNotAnInteger:
+        except (PageNotAnInteger, EmptyPage):
+            this_page = "1"
             page_workouts = paginated_workouts.page(1)
-        except EmptyPage:
-            page_workouts = paginated_workouts.page(paginated_workouts.num_pages)
+
+        lower_range = range(1, paginated_workouts.num_pages + 1)
+        upper_range = None
+        # If greater that 20 pages split the into first and last 10
+        if paginated_workouts.num_pages > 20:
+            lower_range = range(1, 11)
+            upper_range = range(paginated_workouts.num_pages - 9, paginated_workouts.num_pages + 1)
+        # Scroll numbers if page past 5
+        if int(this_page) > 5 and paginated_workouts.num_pages - int(this_page) > 8:
+            lower_range = range(int(this_page) - 4, min(11 + int(this_page) - 5, paginated_workouts.num_pages - 9))
 
         workout_form = WorkoutForm()
-        return render(request=request, template_name="workouts/workouts.html", context={'workout_form': workout_form, 'workouts': page_workouts})
+        return render(
+            request=request, 
+            template_name="workouts/workouts.html", 
+            context={
+                'workout_form': workout_form, 
+                'workouts': page_workouts,
+                'lower_range': lower_range,
+                'upper_range': upper_range
+            }
+        )
 
     elif request.method == "POST":
         user = User.objects.filter(id=request.user.id)[0]

@@ -68,11 +68,33 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav2">
                         <ul class="navbar-nav">
-                            {% for page_num in workouts.paginator.page_range %}
+                            <li class="nav-item">
+                                {% if workouts.number > 1 %}
+                                    <a class="nav-link active" aria-current="page" href="?page={{ workouts.number | add:"-1" }}">&#60;</a>
+                                {% else %}
+                                    <a class="nav-link active" aria-current="page" href="">&#60;</a>
+                                {% endif %}
+                            </li>
+                            {% for page_num in lower_range %}
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="?page={{ page_num }}">{{ page_num }}</a>
                                 </li>
                             {% endfor %}
+                            {% if workouts.paginator.num_pages > 20 %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page">...</a>
+                                </li>
+                            {% endif %}
+                            {% for page_num in upper_range %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% endfor %}
+                            {% if workouts.number < workouts.paginator.num_pages %}
+                                <a class="nav-link active" aria-current="page" href="?page={{ workouts.number | add:"1" }}">&#62;</a>
+                            {% else %}
+                                <a class="nav-link active" aria-current="page" href="">&#62;</a>
+                            {% endif %}
                         </ul>
                     </div>
                 </nav>
