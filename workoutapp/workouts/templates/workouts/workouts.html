@@ -15,7 +15,7 @@
         
         <div class="container">
             <!--Django Model-->
-            <h2 class="my-4">Workout</h2>
+            <h2 class="my-4">Workouts - Page {{ workouts.number }}</h2>
             <div class="row">
                 <table class="table">
                     <tr>
@@ -30,7 +30,7 @@
                         <th>Actual distance</th>
                         <th></th>
                     </tr>
-                    {% for w in workout %}
+                    {% for w in workouts %}
                         <tr>
                             {% if w.notes %}
                                 <td id="tooltip1"><a style="border-bottom: 1px dotted #000;">{{ w.name }}<span>{{ w.notes }}</span></a></td>
@@ -60,13 +60,32 @@
                     {% endfor %}
                 </table>
             </div>
-            <!--Django Model Form-->
-            <h2 class="my-4">Add a new workout</h2>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ workout_form | crispy }}
-                <button class="btn btn-primary my-4" type="submit">Submit</button>
-            </form>
+            <div class="row">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <a class="navbar-brand">Page</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav2" aria-controls="navbarNav2" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav2">
+                        <ul class="navbar-nav">
+                            {% for page_num in workouts.paginator.page_range %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <div class="row">
+                <!--Django Model Form-->
+                <h2 class="my-4">Add a new workout</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ workout_form | crispy }}
+                    <button class="btn btn-primary my-4" type="submit">Submit</button>
+                </form>
+            </div>
         </div>
     </body>
 </html>

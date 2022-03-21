@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from rest_framework.views import APIView
@@ -25,8 +26,18 @@ def WorkoutFormView(request):
         # Get workouts ordered by newest first
         user_workouts = Workout.objects.filter(user=user).order_by("-start_time")
 
+        this_page = request.GET.get("page", 1)
+        paginated_workouts = Paginator(user_workouts, 15)
+
+        try:
+            page_workouts = paginated_workouts.page(this_page)
+        except PageNotAnInteger:
+            page_workouts = paginated_workouts.page(1)
+        except EmptyPage:
+            page_workouts = paginated_workouts.page(paginated_workouts.num_pages)
+
         workout_form = WorkoutForm()
-        return render(request=request, template_name="workouts/workouts.html", context={'workout_form': workout_form, 'workout': user_workouts})
+        return render(request=request, template_name="workouts/workouts.html", context={'workout_form': workout_form, 'workouts': page_workouts})
 
     elif request.method == "POST":
         user = User.objects.filter(id=request.user.id)[0]
