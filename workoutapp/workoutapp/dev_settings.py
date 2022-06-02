@@ -30,7 +30,7 @@ except KeyError as e:
 
 ALLOWED_HOSTS = ["workout.climbing-app.co.uk", "localhost"]
 
-DEBUG=False
+DEBUG=True
 
 # Application definition
 
@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'workoutapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'django_workoutapp',
+        'NAME': 'django_workoutapp_dev',
     }
 }
 
