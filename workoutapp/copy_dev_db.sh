@@ -1,7 +1,4 @@
 #!/bin/bash
 
-mongodump --archive="mongodump_prod_db" --db=django_workoutapp
-
-mongorestore --archive="mongodump_prod_db" --nsFrom='django_workoutapp.*' --nsTo='django_workoutapp_dev.*'
-
-rm mongodump_prod_db
+sudo -u postgres dropdb django_workoutapp_dev
+sudo -u postgres createdb django_workoutapp_dev -T django_workoutapp
