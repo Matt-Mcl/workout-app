@@ -28,7 +28,7 @@ try:
 except KeyError as e:
     raise RuntimeError("Could not find a SECRET_KEY in environment") from e
 
-ALLOWED_HOSTS = ["workout.climbing-app.co.uk", "localhost"]
+ALLOWED_HOSTS = ["workout.manysite.net", "localhost"]
 
 DEBUG=True
 
@@ -60,7 +60,7 @@ MIDDLEWARE = [
 CSRF_TRUSTED_ORIGINS = [
     'http://*.localhost/*',
     'http://*.127.0.0.1/*',
-    'https://*.climbing-app.co.uk/*'
+    'https://*.manysite.net/*'
 ]
 
 ROOT_URLCONF = 'workoutapp.urls'
