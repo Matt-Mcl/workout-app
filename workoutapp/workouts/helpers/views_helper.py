@@ -54,6 +54,12 @@ def parse_json_data(request, user_id):
             "user": user_id
         }
 
+        # Convert swimming meters in kilometers
+        if "swim" in object['name'].lower():
+            object['distance'] /= 1000
+
+        print(object['name'], object['distance'], flush=True)
+
         workout_objects.append(object)
 
     return workout_objects
