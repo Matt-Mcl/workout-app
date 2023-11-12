@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'strength',
     'workouts',
     'rest_framework',
     'rest_framework_api_key',
@@ -148,6 +149,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/workouts/'
 LOGOUT_REDIRECT_URL = '/login/'
 API_KEY_CUSTOM_HEADER = 'HTTP_API_KEY'

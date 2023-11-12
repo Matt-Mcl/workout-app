@@ -17,7 +17,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 offset-md-3 mt-3">
-                        <form method="post" action="{% url 'login' %}">
+                        <form method="post" action="{{request.get_full_path}}">
                             {% csrf_token %}
                             <div class="form-group">
                                 {{ form.username.label_tag }}

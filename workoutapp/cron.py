@@ -13,7 +13,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'workoutapp.settings')
 django.setup()
 
 # This needs to come after django setup
-from workouts.models import *
+from strength.models import *
+from django.contrib.auth.models import User
+
+# This is custom work just for Developer
+user = User.objects.filter(username = "Matt")[0]
 
 load_dotenv()
 
@@ -63,7 +67,8 @@ for w in workouts:
             intensity_string=intensity_string,
             intensity=intensity_score,
             duration=duration,
-            moves=moves
+            moves=moves,
+            user=user
         )
     except django.db.utils.IntegrityError:
         # Workout already exists, continue

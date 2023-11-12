@@ -29,23 +29,3 @@ class Workout(models.Model):
     notes = models.TextField(null=True, blank=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class StrengthExercise(models.Model):
-    # Execises contains a name, sets, reps to do, reps done, kg to do and kg done per StrengthWorkout
-    name = models.CharField(max_length=100)
-    set = models.IntegerField()
-    reps_to_do = models.CharField(max_length=10)
-    reps_done = models.CharField(max_length=10)
-    kg_to_do = models.CharField(max_length=10)
-    kg_done = models.CharField(max_length=10)
-
-
-class StrengthWorkout(models.Model):
-    date = models.DateTimeField(unique=True)
-    intensity_string = models.CharField(max_length=100)
-    intensity = models.IntegerField()
-    duration = models.DurationField()
-    moves = models.IntegerField()
-
-    exercises = models.ManyToManyField(StrengthExercise)

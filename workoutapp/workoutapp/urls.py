@@ -17,18 +17,21 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from workouts import views
+from workouts import views as workouts_views
+from strength import views as strength_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('strength/', strength_views.StrengthView, name='strength'),
     
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('register/', views.register, name='register'),
-    path('workouts/', views.WorkoutFormView, name='workout'),
-    path('workouts/edit/<int:workout_id>/', views.EditWorkout, name='edit_workout'),
-    path('api/workouts/', views.WorkoutAPIView.as_view(), name='api_workout'),
-    path('api/users/', views.UserAPIView.as_view(), name='api_runs'),
-    path('api/keys/', views.KeyView.as_view(), name='api_keys'),
-    path('', views.home, name='home'),
+    path('register/', workouts_views.register, name='register'),
+    path('workouts/', workouts_views.WorkoutFormView, name='workout'),
+    path('workouts/edit/<int:workout_id>/', workouts_views.EditWorkout, name='edit_workout'),
+    path('api/workouts/', workouts_views.WorkoutAPIView.as_view(), name='api_workout'),
+    path('api/users/', workouts_views.UserAPIView.as_view(), name='api_runs'),
+    path('api/keys/', workouts_views.KeyView.as_view(), name='api_keys'),
+    path('', workouts_views.home, name='home'),
 ]
