@@ -1,6 +1,7 @@
 {% extends 'registration/logged_in_base.html' %}
 {% block content2 %}
 {% load static %}
+{% load strength_extras %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,6 +42,7 @@
                         <th>Reps Done</th>
                         <th>KG To Do</th>
                         <th>KG Done</th>
+                        <th>Difference</th>
                     </tr>
                     {% for e in workout.exercises.all %}
                         <tr>
@@ -50,6 +52,15 @@
                             <td>{{ e.reps_done }}</td>
                             <td>{{ e.kg_to_do }}</td>
                             <td>{{ e.kg_done }}</td>
+                            {% if e.kg_done|diff:e.kg_to_do > 0 %}
+                                <td style="color:green;">
+                                    +{{ e.kg_done|diff:e.kg_to_do }}
+                                </td>
+                            {% else %}
+                                <td style="color:red;">
+                                    {{ e.kg_done|diff:e.kg_to_do }}
+                                </td>
+                            {% endif %}
                         </tr>
                     {% empty %}
                         <p>No workout found.</p>
