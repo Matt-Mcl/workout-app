@@ -61,46 +61,51 @@ for w in workouts:
     duration = workout_info[1].text.split(" ")[0]
     moves = workout_info[2].text.split(" ")[0]
 
-    try:
-        strength_workout = StrengthWorkout.objects.create(
-            date=datetime.strptime(date, "%Y%m%d").replace(tzinfo=pytz.UTC),
-            intensity_string=intensity_string,
-            intensity=intensity_score,
-            duration=duration,
-            moves=moves,
-            user=user
-        )
-    except django.db.utils.IntegrityError:
-        # Workout already exists, continue
+    if StrengthWorkout.objects.filter(date=datetime.strptime(date, "%Y%m%d").replace(tzinfo=pytz.UTC)).exists():
         continue
 
-    # Get each exercise
-    exercises = w.find_all("a", attrs={"class": "clearfix"})
+    strength_workout = StrengthWorkout.objects.create(
+        date=datetime.strptime(date, "%Y%m%d").replace(tzinfo=pytz.UTC),
+        intensity_string=intensity_string,
+        intensity=intensity_score,
+        duration=duration,
+        moves=moves,
+        user=user
+    )
 
-    for e in exercises:
-        name = e.find("span", attrs={"class": "note"}).text
+    try:
+        # Get each exercise
+        exercises = w.find_all("a", attrs={"class": "clearfix"})
 
-        if name in ["Run", "Bike"]:
-            continue
+        for e in exercises:
+            name = e.find("span", attrs={"class": "note"}).text
 
-        # Get data from link
-        time.sleep(1)
-        response = br.open(e["href"])
+            if "Sel" not in name:
+                continue
 
-        soup = BeautifulSoup(response.read(), "html.parser")
+            # Get data from link
+            time.sleep(1)
+            response = br.open(e["href"])
 
-        sets = soup.find_all("td")
+            soup = BeautifulSoup(response.read(), "html.parser")
 
-        # Loop through sets
-        for item in range(0, len(sets), 5):
+            sets = soup.find_all("td")
 
-            strength_exercise = StrengthExercise.objects.create(
-                name=name,
-                set=sets[item].text,
-                reps_to_do=sets[item+1].text,
-                reps_done=sets[item+2].text,
-                kg_to_do=sets[item+3].text,
-                kg_done=sets[item+4].text
-            )
+            # Loop through sets
+            for item in range(0, len(sets), 5):
 
-            strength_workout.exercises.add(strength_exercise)
+                strength_exercise = StrengthExercise.objects.create(
+                    name=name,
+                    set=sets[item].text,
+                    reps_to_do=sets[item+1].text,
+                    reps_done=sets[item+2].text,
+                    kg_to_do=sets[item+3].text,
+                    kg_done=sets[item+4].text
+                )
+
+                strength_workout.exercises.add(strength_exercise)
+
+    except Exception as ex:
+        # Rollback
+        strength_workout.delete()
+        raise Exception(f"Error creating workout: ({ex})")
