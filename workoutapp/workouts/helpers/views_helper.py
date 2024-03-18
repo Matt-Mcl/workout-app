@@ -124,7 +124,7 @@ def add_fitness_mins(workouts, user_id):
 
 def get_week_fitness_mins(user_id):
     # Get the workouts for the current week (monday to sunday)
-    start_date = timezone.now() - timedelta(days=datetime.now().weekday())
+    start_date = (timezone.now() - timedelta(days=timezone.now().weekday())).date()
     workouts = Workout.objects.filter(user=user_id, start_time__gte=start_date)
 
     workouts_with_fitness_mins = add_fitness_mins(workouts, user_id)
