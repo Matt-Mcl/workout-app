@@ -1,6 +1,6 @@
 from rest_framework_api_key.models import APIKey
 from ..models import User
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def get_user_data(request):
@@ -25,41 +25,69 @@ def parse_json_data(request, user_id):
 
     for w in workouts:
         location = "O"
-        if w['isIndoor']:
+        if w['location'] == "Indoor":
             location = "I"
 
         start = datetime.strptime(w['start'], "%Y-%m-%d %H:%M:%S %z")
         end = datetime.strptime(w['end'], "%Y-%m-%d %H:%M:%S %z")
-        duration = end - start
+        duration = timedelta(seconds=int(w['duration']))
 
-        object = {
+        activeEnergy = int(sum(ae['qty'] for ae in w['activeEnergy']))
+
+        minsAtHRs = {}
+        cumulativeAverageHR = 0
+        HRSamples = 0
+        maxHR = 0
+
+        for item in w['heartRateData']:
+            HRSamples += 1
+            averageHeartRate = round(item['Avg']) 
+            cumulativeAverageHR += averageHeartRate
+
+            if averageHeartRate in minsAtHRs:
+                minsAtHRs[averageHeartRate] += 1
+            else:
+                minsAtHRs[averageHeartRate] = 1
+
+            if round(item['Max']) > maxHR:
+                maxHR = round(item['Max'])
+
+        # Sort dictionary by key
+        minsAtHRs = {k: v for k, v in sorted(minsAtHRs.items())}
+
+        totalDistance = 0
+
+        if "distance" in w:
+            totalDistance = round(w['distance']['qty'], 2)
+            
+        totalSteps = 0
+        
+        for item in w['stepCount']:
+            totalSteps += item['qty']
+
+        stepCadence = int(totalSteps / (w['duration'] / 60))
+
+        obj = {
             "name": w['name'],
             "location": location,
             "start_time": start,
+            "end_time": end,
             "duration": duration,
-            "active_kilocalories": int(w['activeEnergy']['qty']),
-            "total_kilocalories": int(w['totalEnergy']['qty']),
-            "average_heart_rate": int(w['avgHeartRate']['qty']),
-            "max_heart_rate": int(w['maxHeartRate']['qty']),
-            "distance": round(w['distance']['qty'], 2),
-            "elevation_gain": int(w['elevation']['ascent']),
-            "step_cadence": int(w['stepCadence']['qty']),
+            "active_kilocalories": activeEnergy,
+            "average_heart_rate": round(cumulativeAverageHR/HRSamples),
+            "max_heart_rate": maxHR,
+            "mins_at_hr": str(minsAtHRs),
+            "distance": totalDistance,
+            "step_count": round(totalSteps),
+            "step_cadence": stepCadence,
             "temperature": int(w['temperature']['qty']),
             "humidity": int(w['humidity']['qty']),
             "intensity": round(w['intensity']['qty'], 2),
-            "flights_climbed": int(w['flightsClimbed']['qty']),
-            "step_count": int(w['stepCount']['qty']),
-            "swim_cadence": int(w['intensity']['qty']),
-            "total_swimming_stroke_count": int(w['intensity']['qty']),
             "user": user_id
         }
 
-        # Convert swimming meters in kilometers
-        if "swim" in object['name'].lower():
-            object['distance'] /= 1000
+        print(obj['name'], obj['duration'], flush=True)
 
-        print(object['name'], object['distance'], flush=True)
-
-        workout_objects.append(object)
+        workout_objects.append(obj)
 
     return workout_objects

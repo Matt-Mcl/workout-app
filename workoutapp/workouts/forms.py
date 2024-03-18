@@ -11,5 +11,6 @@ class WorkoutForm(forms.ModelForm):
 
         widgets = {
             'start_time': forms.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs={'type': 'datetime-local'}),
+            'end_time': forms.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs={'type': 'datetime-local'}),
             'duration': forms.TextInput(attrs={"class": "html-duration-picker"}),
         }
