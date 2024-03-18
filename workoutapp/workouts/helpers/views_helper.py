@@ -52,8 +52,7 @@ def parse_json_data(request, user_id):
             if round(item['Max']) > maxHR:
                 maxHR = round(item['Max'])
 
-        # Sort dictionary by key
-        minsAtHRs = {k: v for k, v in sorted(minsAtHRs.items())}
+        minsAtHRs = sorted(minsAtHRs.items())
 
         totalDistance = 0
 
