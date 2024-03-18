@@ -27,7 +27,7 @@
                         <th>Average heart rate</th>
                         <th>Max heart rate</th>
                         <th>Distance</th>
-                        <th>Actual distance</th>
+                        <th>Fitness mins</th>
                         <th></th>
                     </tr>
                     {% for w in workouts %}
@@ -48,8 +48,8 @@
                             {% else %}
                                 <td></td>
                             {% endif %}
-                            {% if w.actual_distance %}
-                                <td>{{ w.actual_distance }} km</td>
+                            {% if w.fitness_mins %}
+                                <td>{{ w.fitness_mins }} Minutes</td>
                             {% else %}
                                 <td></td>
                             {% endif %}

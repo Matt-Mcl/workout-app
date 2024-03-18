@@ -66,6 +66,18 @@ def parse_json_data(request, user_id):
 
         stepCadence = int(totalSteps / (w['duration'] / 60))
 
+        temperature = None
+        if "temperature" in w:
+            temperature = int(w['temperature']['qty'])
+
+        humidity = None
+        if "humidity" in w:
+            humidity = int(w['humidity']['qty'])
+
+        intensity = None
+        if "intensity" in w:
+            intensity = round(w['intensity']['qty'], 2)
+
         obj = {
             "name": w['name'],
             "location": location,
@@ -79,9 +91,9 @@ def parse_json_data(request, user_id):
             "distance": totalDistance,
             "step_count": round(totalSteps),
             "step_cadence": stepCadence,
-            "temperature": int(w['temperature']['qty']),
-            "humidity": int(w['humidity']['qty']),
-            "intensity": round(w['intensity']['qty'], 2),
+            "temperature": temperature,
+            "humidity": humidity,
+            "intensity": intensity,
             "user": user_id
         }
 
@@ -90,3 +102,20 @@ def parse_json_data(request, user_id):
         workout_objects.append(obj)
 
     return workout_objects
+
+
+def add_fitness_mins(workouts, user_id):
+    # TODO: Modify to get the fitness mins threshold from user settings
+    threshold = 142
+
+    workouts_with_fitness_mins = []
+
+    for w in workouts:
+        # Get minutes of workout where heartrate is above threshold
+        if w.mins_at_hr is not None:
+            fitness_mins = sum([x[1] for x in eval(w.mins_at_hr) if int(x[0]) >= threshold])
+            w.fitness_mins = fitness_mins
+
+        workouts_with_fitness_mins.append(w)
+
+    return workouts_with_fitness_mins
