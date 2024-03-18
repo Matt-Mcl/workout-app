@@ -37,6 +37,8 @@ def WorkoutFormView(request):
 
         page_workouts = views_helper.add_fitness_mins(page_workouts, user.id)
 
+        weekly_fitness_mins = views_helper.get_week_fitness_mins(user.id)
+
         lower_range = range(1, paginated_workouts.num_pages + 1)
         upper_range = None
         # If greater that 20 pages split the into first and last 10
@@ -54,6 +56,7 @@ def WorkoutFormView(request):
             context={
                 'workout_form': workout_form, 
                 'workouts': page_workouts,
+                'weekly_fitness_mins': weekly_fitness_mins,
                 'lower_range': lower_range,
                 'upper_range': upper_range
             }

@@ -1,6 +1,7 @@
 from rest_framework_api_key.models import APIKey
-from ..models import User
+from ..models import User, Workout
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 
 def get_user_data(request):
@@ -106,7 +107,7 @@ def parse_json_data(request, user_id):
 
 def add_fitness_mins(workouts, user_id):
     # TODO: Modify to get the fitness mins threshold from user settings
-    threshold = 142
+    threshold = 138
 
     workouts_with_fitness_mins = []
 
@@ -119,3 +120,16 @@ def add_fitness_mins(workouts, user_id):
         workouts_with_fitness_mins.append(w)
 
     return workouts_with_fitness_mins
+
+
+def get_week_fitness_mins(user_id):
+    # Get the workouts for the current week (monday to sunday)
+    start_date = timezone.now() - timedelta(days=datetime.now().weekday())
+    workouts = Workout.objects.filter(user=user_id, start_time__gte=start_date)
+
+    workouts_with_fitness_mins = add_fitness_mins(workouts, user_id)
+
+    # Sum the fitness mins
+    total_fitness_mins = sum([w.fitness_mins for w in workouts_with_fitness_mins])
+
+    return total_fitness_mins

@@ -56,8 +56,13 @@
                             <td><a href="/workouts/edit/{{ w.id }}/">Edit</a></td>
                         </tr>
                     {% empty %}
-                    <p>No workouts added.</p>
+                        <p>No workouts added.</p>
                     {% endfor %}
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        <td>{{ weekly_fitness_mins }}/120 this week</td>
+                        <td></td>
+                    </tr>
                 </table>
             </div>
             <div class="row">
