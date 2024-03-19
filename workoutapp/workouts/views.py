@@ -54,9 +54,9 @@ def WorkoutFormView(request):
             request=request, 
             template_name="workouts/workouts.html", 
             context={
-                'workout_form': workout_form, 
                 'workouts': page_workouts,
                 'weekly_fitness_mins': weekly_fitness_mins,
+                'workout_form': workout_form, 
                 'lower_range': lower_range,
                 'upper_range': upper_range
             }

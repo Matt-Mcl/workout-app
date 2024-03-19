@@ -109,17 +109,13 @@ def add_fitness_mins(workouts, user_id):
     # TODO: Modify to get the fitness mins threshold from user settings
     threshold = 138
 
-    workouts_with_fitness_mins = []
-
     for w in workouts:
         # Get minutes of workout where heartrate is above threshold
         if w.mins_at_hr is not None:
             fitness_mins = sum([x[1] for x in eval(w.mins_at_hr) if int(x[0]) >= threshold])
             w.fitness_mins = fitness_mins
 
-        workouts_with_fitness_mins.append(w)
-
-    return workouts_with_fitness_mins
+    return workouts
 
 
 def get_week_fitness_mins(user_id):
