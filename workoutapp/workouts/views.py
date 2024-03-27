@@ -50,6 +50,7 @@ def WorkoutFormView(request):
             lower_range = range(int(this_page) - 4, min(11 + int(this_page) - 5, paginated_workouts.num_pages - 9))
 
         workout_form = WorkoutForm()
+
         return render(
             request=request, 
             template_name="workouts/workouts.html", 
