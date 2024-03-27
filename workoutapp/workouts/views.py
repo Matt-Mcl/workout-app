@@ -27,7 +27,7 @@ def WorkoutFormView(request):
         user_workouts = Workout.objects.filter(user=user).order_by("-start_time")
 
         this_page = request.GET.get("page", 1)
-        paginated_workouts = Paginator(user_workouts, 10)
+        paginated_workouts = Paginator(user_workouts, 12)
 
         try:
             page_workouts = paginated_workouts.page(this_page)
