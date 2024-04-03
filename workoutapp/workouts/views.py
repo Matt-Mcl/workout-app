@@ -115,11 +115,12 @@ class WorkoutAPIView(APIView):
 
     def get(self, request):
         user = views_helper.get_user_data(request)[0]
-
         user_workouts = Workout.objects.filter(user=user)
+
         if user.is_superuser:
             user_workouts = Workout.objects.all()
         serializer = WorkoutSerializer(user_workouts, many=True, context={'request': request})
+  
         return Response(serializer.data)
     
     def post(self, request):
@@ -128,10 +129,21 @@ class WorkoutAPIView(APIView):
 
         if "HTTP_AUTO_EXPORT" in request.META:
             workouts = views_helper.parse_json_data(request, user_id)
+
             for w in workouts:
-                serializer = WorkoutSerializer(data=w, context={'request': request})
+                serializer = None
+                workout = Workout.objects.filter(start_time=w['start_time'])
+
+                # If workout already exists and update header is present, update the existing workout
+                # Else create a new workout
+                if "HTTP_UPDATE_EXISTING" in request.META and request.META['HTTP_UPDATE_EXISTING'] == "True" and len(workout) == 1:
+                    serializer = WorkoutSerializer(workout[0], data=w, context={'request': request})
+                else:
+                    serializer = WorkoutSerializer(data=w, context={'request': request})
+                
                 if serializer.is_valid():
                     status.append(serializer.save())
+                
             if not status:
                 return Response({f"success: no workouts created"})
         else:
@@ -142,8 +154,7 @@ class WorkoutAPIView(APIView):
                 return Response({f"error: invalid request"}, status=400)
             status = serializer.save()
 
-        return Response({f"success: {status} workout(s) created successfully"})
-
+        return Response({f"success: {status} workout(s) created/updated successfully"})
 
 class UserAPIView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]

@@ -25,35 +25,43 @@ def parse_json_data(request, user_id):
     workouts = request.data['data']['workouts']
 
     for w in workouts:
-        location = "O"
-        if w['location'] == "Indoor":
-            location = "I"
+        location = "I"
+        if "location" in w and w['location'] == "Outdoor":
+            location = "O"
 
         start = datetime.strptime(w['start'], "%Y-%m-%d %H:%M:%S %z")
         end = datetime.strptime(w['end'], "%Y-%m-%d %H:%M:%S %z")
         duration = timedelta(seconds=int(w['duration']))
 
-        activeEnergy = int(sum(ae['qty'] for ae in w['activeEnergy']))
+        activeEnergy = 0 
+        if "activeEnergy" in w:
+            if isinstance(w['activeEnergy'], list):
+                activeEnergy = int(sum(ae['qty'] for ae in w['activeEnergy']))
+            else:
+                activeEnergy = int(w['activeEnergy']['qty'])
 
         minsAtHRs = {}
         cumulativeAverageHR = 0
         HRSamples = 0
         maxHR = 0
+        avgHR = 0
 
-        for item in w['heartRateData']:
-            HRSamples += 1
-            averageHeartRate = round(item['Avg']) 
-            cumulativeAverageHR += averageHeartRate
+        if "heartRateData" in w:
+            for item in w['heartRateData']:
+                HRSamples += 1
+                averageHeartRate = round(item['Avg']) 
+                cumulativeAverageHR += averageHeartRate
 
-            if averageHeartRate in minsAtHRs:
-                minsAtHRs[averageHeartRate] += 1
-            else:
-                minsAtHRs[averageHeartRate] = 1
+                if averageHeartRate in minsAtHRs:
+                    minsAtHRs[averageHeartRate] += 1
+                else:
+                    minsAtHRs[averageHeartRate] = 1
 
-            if round(item['Max']) > maxHR:
-                maxHR = round(item['Max'])
+                if round(item['Max']) > maxHR:
+                    maxHR = round(item['Max'])
 
-        minsAtHRs = sorted(minsAtHRs.items())
+            minsAtHRs = sorted(minsAtHRs.items())
+            avgHR = round(cumulativeAverageHR/HRSamples)
 
         totalDistance = 0
 
@@ -62,8 +70,9 @@ def parse_json_data(request, user_id):
             
         totalSteps = 0
         
-        for item in w['stepCount']:
-            totalSteps += item['qty']
+        if "stepCount" in w:
+            for item in w['stepCount']:
+                totalSteps += item['qty']
 
         stepCadence = int(totalSteps / (w['duration'] / 60))
 
@@ -86,7 +95,7 @@ def parse_json_data(request, user_id):
             "end_time": end,
             "duration": duration,
             "active_kilocalories": activeEnergy,
-            "average_heart_rate": round(cumulativeAverageHR/HRSamples),
+            "average_heart_rate": avgHR,
             "max_heart_rate": maxHR,
             "mins_at_hr": str(minsAtHRs),
             "distance": totalDistance,
