@@ -59,8 +59,8 @@ coverage.xml
 *.log
 db.sqlite3
 db.sqlite3-journal
-*/static/admin
-*/static/rest_framework
+*/static/workoutapp/admin
+*/static/workoutapp/rest_framework
 local_*
 
 # Flask stuff:
