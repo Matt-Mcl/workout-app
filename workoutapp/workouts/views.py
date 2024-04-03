@@ -37,7 +37,7 @@ def WorkoutFormView(request):
 
         page_workouts = views_helper.add_fitness_mins(page_workouts, user.id)
 
-        weekly_fitness_mins = views_helper.get_week_fitness_mins(user.id)
+        weekly_fitness_mins = views_helper.get_week_fitness_mins(user.id)[0]
 
         lower_range = range(1, paginated_workouts.num_pages + 1)
         upper_range = None
@@ -74,6 +74,47 @@ def WorkoutFormView(request):
 
     else:
         return HttpResponse(content="invalid request", status=400)
+
+
+@login_required
+def FitnessMinsView(request, weeks):
+    # Limit to 2 years
+    if weeks > 96:
+        weeks = 96
+
+    user = User.objects.filter(id=request.user.id)[0]
+    graph_fitness_mins = []
+    total_fitness_mins = 0
+
+    current_fitness_mins = views_helper.get_week_fitness_mins(user.id)[0]
+
+    for i in range(weeks, 0, -1):
+        data = views_helper.get_week_fitness_mins(user.id, i)
+        start_date = data[1].strftime("%d/%m/%Y")
+        end_date = data[2].strftime("%d/%m/%Y")
+        
+        graph_fitness_mins.append(
+            {
+                "mins": data[0],
+                "start_date": start_date,
+                "end_date": end_date
+            }
+        )
+
+        total_fitness_mins += data[0]
+
+    avg_fitness_mins = round(total_fitness_mins / weeks)
+
+    return render(
+        request=request, 
+        template_name="workouts/fitness.html", 
+        context={
+            'graph_fitness_mins': graph_fitness_mins,
+            'avg_fitness_mins': avg_fitness_mins,
+            'current_fitness_mins': current_fitness_mins,
+            'months': int(weeks / 4)
+        }
+    )
 
 
 @login_required

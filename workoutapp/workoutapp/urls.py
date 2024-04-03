@@ -30,6 +30,7 @@ urlpatterns = [
     path('register/', workouts_views.register, name='register'),
     path('workouts/', workouts_views.WorkoutFormView, name='workout'),
     path('workouts/edit/<int:workout_id>/', workouts_views.EditWorkout, name='edit_workout'),
+    path('fitness/<int:weeks>/', workouts_views.FitnessMinsView, name='fitness'),
     path('api/workouts/', workouts_views.WorkoutAPIView.as_view(), name='api_workout'),
     path('api/users/', workouts_views.UserAPIView.as_view(), name='api_runs'),
     path('api/keys/', workouts_views.KeyView.as_view(), name='api_keys'),

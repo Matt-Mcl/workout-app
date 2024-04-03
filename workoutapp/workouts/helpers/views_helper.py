@@ -127,15 +127,16 @@ def add_fitness_mins(workouts, user_id):
     return workouts
 
 
-def get_week_fitness_mins(user_id):
+def get_week_fitness_mins(user_id, offset=0):
     # Get the workouts for the current week (monday to sunday) with timezone but from midnight
-    start_date = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=timezone.now().weekday())
+    start_date = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=timezone.now().weekday()) - timedelta(days=offset*7)
+    end_date = start_date + timedelta(days=7)
 
-    workouts = Workout.objects.filter(user=user_id, start_time__gte=start_date)
+    workouts = Workout.objects.filter(user=user_id, start_time__gte=start_date, start_time__lte=end_date)
 
     workouts_with_fitness_mins = add_fitness_mins(workouts, user_id)
 
     # Sum the fitness mins
     total_fitness_mins = sum([w.fitness_mins for w in workouts_with_fitness_mins])
 
-    return total_fitness_mins
+    return (total_fitness_mins, start_date, end_date)
