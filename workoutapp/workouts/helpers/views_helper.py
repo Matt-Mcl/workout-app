@@ -25,13 +25,15 @@ def parse_json_data(request, user_id):
     workouts = request.data['data']['workouts']
 
     for w in workouts:
-        location = "I"
-        if "location" in w and w['location'] == "Outdoor":
-            location = "O"
-
         start = datetime.strptime(w['start'], "%Y-%m-%d %H:%M:%S %z")
         end = datetime.strptime(w['end'], "%Y-%m-%d %H:%M:%S %z")
         duration = timedelta(seconds=int(w['duration']))
+
+        print(w['name'], start, flush=True)
+
+        location = "I"
+        if "location" in w and w['location'] == "Outdoor":
+            location = "O"
 
         activeEnergy = 0 
         if "activeEnergy" in w:
@@ -106,8 +108,6 @@ def parse_json_data(request, user_id):
             "intensity": intensity,
             "user": user_id
         }
-
-        print(obj['name'], obj['duration'], flush=True)
 
         workout_objects.append(obj)
 
