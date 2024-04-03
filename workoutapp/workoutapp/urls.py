@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 
 from workouts import views as workouts_views
 from strength import views as strength_views
@@ -31,6 +32,7 @@ urlpatterns = [
     path('workouts/', workouts_views.WorkoutFormView, name='workout'),
     path('workouts/edit/<int:workout_id>/', workouts_views.EditWorkout, name='edit_workout'),
     path('fitness/<int:weeks>/', workouts_views.FitnessMinsView, name='fitness'),
+    path('fitness/', lambda request: redirect('/fitness/24/')),
     path('api/workouts/', workouts_views.WorkoutAPIView.as_view(), name='api_workout'),
     path('api/users/', workouts_views.UserAPIView.as_view(), name='api_runs'),
     path('api/keys/', workouts_views.KeyView.as_view(), name='api_keys'),
