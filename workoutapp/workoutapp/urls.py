@@ -34,7 +34,8 @@ urlpatterns = [
     path('fitness/<int:weeks>/', workouts_views.FitnessMinsView, name='fitness'),
     path('fitness/', lambda request: redirect('/fitness/24/')),
     path('api/workouts/', workouts_views.WorkoutAPIView.as_view(), name='api_workout'),
-    path('api/users/', workouts_views.UserAPIView.as_view(), name='api_runs'),
+    path('api/vo2/', workouts_views.VO2APIView.as_view(), name='api_vo2'),
+    path('api/users/', workouts_views.UserAPIView.as_view(), name='api_users'),
     path('api/keys/', workouts_views.KeyView.as_view(), name='api_keys'),
     path('', workouts_views.home, name='home'),
 ]

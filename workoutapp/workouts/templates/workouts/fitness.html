@@ -28,17 +28,36 @@
             type: 'line',
             data: {
                 labels : [{% for item in graph_fitness_mins %}"{{ item.start_date }}",{% endfor %}],
-                datasets: [{
+                datasets: [
+                {
+                    yAxisID: 'first',
                     label: "Fitness mins by week",
-                    data : [{% for item in graph_fitness_mins %}{{ item.mins }},{% endfor %}],
-                    borderWidth: 1
-                }]
+                    data: [{% for item in graph_fitness_mins %}{{ item.mins }},{% endfor %}],
+                    borderWidth: 1,
+                },
+                {
+                    yAxisID: 'second',
+                    label: "VO2 Max",
+                    data : [{% for item in graph_fitness_mins %}{{ item.vo2_max }},{% endfor %}],
+                    borderWidth: 1,
+                }
+                ]
             },
             options: {
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    first: {
+                        type: 'linear',
+                        position: 'left',
+                        min: 0,
+                        grid: { display: false }
+                    },
+                    second: {
+                        type: 'linear',
+                        position: 'right',
+                        max: 80,
+                        min: 0,
+                        grid: { display: false }
+                    },
                 }
             }
         });

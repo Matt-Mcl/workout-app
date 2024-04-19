@@ -10,7 +10,7 @@ from rest_framework_api_key.models import APIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from .helpers import views_helper
 from .serializers import *
@@ -88,20 +88,45 @@ def FitnessMinsView(request, weeks):
 
     current_fitness_mins = views_helper.get_week_fitness_mins(user.id)[0]
 
+    VO2s = VO2Reading.objects.filter(user=user, date__gte=datetime.now() - timedelta(weeks=weeks)).order_by('-date')
+
+    prev_VO2 = 0
+
     for i in range(weeks, 0, -1):
         data = views_helper.get_week_fitness_mins(user.id, i)
         start_date = data[1].strftime("%d/%m/%Y")
         end_date = data[2].strftime("%d/%m/%Y")
+
+        vo2_max = 0
+
+        for item in VO2s:
+            if item.date >= data[1].date() and item.date <= data[2].date():
+                vo2_max = item.vo2_max
+                prev_VO2 = item.vo2_max
+                break
+
+        if vo2_max == 0:
+            vo2_max = prev_VO2
         
         graph_fitness_mins.append(
             {
                 "mins": data[0],
+                "vo2_max": vo2_max,
                 "start_date": start_date,
                 "end_date": end_date
             }
         )
 
         total_fitness_mins += data[0]
+
+    # If any of the vo2_max values in graph_fitness_mins are 0,
+    # set them as the next value that isn't 0
+    for item in graph_fitness_mins:
+        if item['vo2_max'] == 0:
+            for next_item in graph_fitness_mins:
+                if next_item['vo2_max'] != 0:
+                    item['vo2_max'] = next_item['vo2_max']
+                    break
 
     avg_fitness_mins = round(total_fitness_mins / weeks)
 
@@ -196,6 +221,35 @@ class WorkoutAPIView(APIView):
             status = serializer.save()
 
         return Response({f"success: {status} workout(s) created/updated successfully"})
+
+
+class VO2APIView(APIView):
+    permission_classes = [HasAPIKey | IsAuthenticated]
+
+    def get(self, request):
+        user = views_helper.get_user_data(request)[0]
+        vo2_readings = VO2Reading.objects.filter(user=user)
+
+        if user.is_superuser:
+            vo2_readings = VO2Reading.objects.all()
+
+        serializer = VO2ReadingSerializer(vo2_readings, many=True, context={'request': request})
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        user = views_helper.get_user_data(request)[0]
+        readings = request.data['data']['metrics'][0]['data']
+
+        for item in readings:
+            date = datetime.strptime(item['date'], "%Y-%m-%d %H:%M:%S %z")
+
+            vo2 = VO2Reading.objects.filter(user=user, date=date)
+            if not vo2:
+                VO2Reading.objects.create(user=user, date=date, vo2_max=item['qty'])
+
+        return Response({f"success: VO2 reading(s) created successfully"})
+
 
 class UserAPIView(APIView):
     permission_classes = [HasAPIKey | IsAuthenticated]

@@ -25,3 +25,10 @@ class Workout(models.Model):
     notes = models.TextField(null=True, blank=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class VO2Reading(models.Model):
+    vo2_max = models.DecimalField(max_digits=6, decimal_places=2)
+    date = models.DateField()
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
