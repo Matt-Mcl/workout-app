@@ -20,12 +20,12 @@
                 <table class="table">
                     <tr>
                         <th>Name</th>
-                        <th>Location</th>
-                        <th>Start Time</th>
                         <th>Duration</th>
+                        <th>Start Time</th>
                         <th>Active kilocalories</th>
                         <th>Average heart rate</th>
                         <th>Max heart rate</th>
+                        <th>Location</th>
                         <th>Distance</th>
                         <th>Fitness mins</th>
                         <th></th>
@@ -37,12 +37,12 @@
                             {% else %}
                                 <td>{{ w.name }}</td>
                             {% endif %}
-                            <td>{{ w.get_location_display }}</td>
-                            <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
                             <td>{{ w.duration }}</td>
+                            <td>{{ w.start_time | date:"d/m/Y, H:i" }}</td>
                             <td>{{ w.active_kilocalories }} kcal</td>
                             <td>{{ w.average_heart_rate }} BPM</td>
                             <td>{{ w.max_heart_rate }} BPM</td>
+                            <td>{{ w.get_location_display }}</td>
                             {% if w.distance %}
                                 <td>{{ w.distance }} km</td>
                             {% else %}
