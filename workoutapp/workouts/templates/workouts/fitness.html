@@ -30,13 +30,13 @@
                 labels : [{% for item in graph_fitness_mins %}"{{ item.start_date }}",{% endfor %}],
                 datasets: [
                 {
-                    yAxisID: 'first',
+                    yAxisID: 'fitness',
                     label: "Fitness mins by week",
                     data: [{% for item in graph_fitness_mins %}{{ item.mins }},{% endfor %}],
                     borderWidth: 1,
                 },
                 {
-                    yAxisID: 'second',
+                    yAxisID: 'vo2',
                     label: "VO2 Max",
                     data : [{% for item in graph_fitness_mins %}{{ item.vo2_max }},{% endfor %}],
                     borderWidth: 1,
@@ -45,22 +45,53 @@
             },
             options: {
                 scales: {
-                    first: {
+                    fitness: {
                         type: 'linear',
                         position: 'left',
                         min: 0,
                         grid: { display: false }
                     },
-                    second: {
+                    vo2: {
                         type: 'linear',
                         position: 'right',
-                        max: 80,
-                        min: 0,
-                        grid: { display: false }
+                        max: 70,
+                        min: 30,
                     },
+                },
+                plugins: {
+                    tooltip: {
+                        enabled: false // Disable built-in tooltip
+                    }
+                },
+                animation: {
+                    onProgress: function() {
+                        var previousTextY = {};
+                        this.data.datasets.forEach(function(dataset, index) {
+                            var meta = this.getDatasetMeta(index);
+                            if (!meta.hidden) {
+                                var datasetBorderColor = dataset.borderColor; // Get the dataset's border color
+                                meta.data.forEach(function(element, index) {
+                                    // Draw the value centered above the data point with the same color as the dataset
+                                    var posX = element.tooltipPosition().x;
+                                    var posY = element.tooltipPosition().y;
+                                    var text = dataset.data[index];
+                                    var textWidth = ctx.measureText(text).width;
+                                    var textY = posY - 10;
+                                    // Check for overlap
+                                    if (previousTextY[index] && Math.abs(textY - previousTextY[index]) < 20) {
+                                        textY = previousTextY[index] - 10;
+                                    }
+                                    previousTextY[index] = textY;
+                                    ctx.fillStyle = datasetBorderColor; // Set text color to dataset's border color
+                                    ctx.fillText(text, posX - textWidth / 2, textY);
+                                });
+                            }
+                        }, this);
+                    }
                 }
-            }
+            },
         });
+
         </script>
     </body>
 </html>

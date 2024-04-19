@@ -101,8 +101,8 @@ def FitnessMinsView(request, weeks):
 
         for item in VO2s:
             if item.date >= data[1].date() and item.date <= data[2].date():
-                vo2_max = item.vo2_max
-                prev_VO2 = item.vo2_max
+                vo2_max = round(item.vo2_max, 1)
+                prev_VO2 = vo2_max
                 break
 
         if vo2_max == 0:
