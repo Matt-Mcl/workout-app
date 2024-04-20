@@ -52,7 +52,7 @@
                             {% else %}
                                 <td></td>
                             {% endif %}
-                            {% if w.route != "[]" %}
+                            {% if w.route != None and w.route != "[]" %}
                                 <td><a href="/workouts/route/{{ w.id }}/">View</a></td>
                             {% else %}
                                 <td></td>
