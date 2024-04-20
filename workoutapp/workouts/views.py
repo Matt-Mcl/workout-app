@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
 from datetime import datetime, timedelta
+import folium
 
 from .helpers import views_helper
 from .serializers import *
@@ -140,6 +141,39 @@ def FitnessMinsView(request, weeks):
             'months': int(weeks / 4)
         }
     )
+
+
+@login_required
+def RouteView(request, workout_id):
+    user = User.objects.filter(id=request.user.id)[0]
+    workout = Workout.objects.filter(id=workout_id)[0]
+
+    if request.method == "GET":
+        if user != workout.user:
+            return HttpResponse(content="invalid request", status=400)
+        
+        data = eval(workout.route)
+
+        figure = folium.Figure()
+
+        ave_lat = sum(p[0] for p in data)/len(data)
+        ave_lon = sum(p[1] for p in data)/len(data)
+        
+        # Load map centred on average coordinates and add lines
+        my_map = folium.Map(location=[ave_lat, ave_lon], zoom_start=15)
+        folium.PolyLine(data, color="red", weight=2.5, opacity=1).add_to(my_map)
+
+        my_map.add_to(figure)
+        
+        figure.render()
+
+        return render(
+            request=request, 
+            template_name="workouts/route.html",
+            context={
+                "map": figure
+            }
+        )
 
 
 @login_required

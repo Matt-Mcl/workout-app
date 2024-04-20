@@ -25,9 +25,9 @@
                         <th>Active kilocalories</th>
                         <th>Average heart rate</th>
                         <th>Max heart rate</th>
-                        <th>Location</th>
                         <th>Distance</th>
                         <th>Fitness mins</th>
+                        <th>Route</th>
                         <th></th>
                     </tr>
                     {% for w in workouts %}
@@ -42,7 +42,6 @@
                             <td>{{ w.active_kilocalories }} kcal</td>
                             <td>{{ w.average_heart_rate }} BPM</td>
                             <td>{{ w.max_heart_rate }} BPM</td>
-                            <td>{{ w.get_location_display }}</td>
                             {% if w.distance %}
                                 <td>{{ w.distance }} km</td>
                             {% else %}
@@ -50,6 +49,11 @@
                             {% endif %}
                             {% if w.fitness_mins %}
                                 <td>{{ w.fitness_mins }} Minutes</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            {% if w.route != "[]" %}
+                                <td><a href="/workouts/route/{{ w.id }}/">View</a></td>
                             {% else %}
                                 <td></td>
                             {% endif %}

@@ -65,6 +65,13 @@ def parse_json_data(request, user_id):
             minsAtHRs = sorted(minsAtHRs.items())
             avgHR = round(cumulativeAverageHR/HRSamples)
 
+        route = []
+
+        if "route" in w:
+            # Only keep every 5th point to save on storage
+            for item in w['route'][::5]:
+                route.append((round(item['latitude'], 6), round(item['longitude'], 6)))
+
         totalDistance = 0
 
         if "distance" in w:
@@ -100,6 +107,7 @@ def parse_json_data(request, user_id):
             "average_heart_rate": avgHR,
             "max_heart_rate": maxHR,
             "mins_at_hr": str(minsAtHRs),
+            "route": str(route),
             "distance": totalDistance,
             "step_count": round(totalSteps),
             "step_cadence": stepCadence,
