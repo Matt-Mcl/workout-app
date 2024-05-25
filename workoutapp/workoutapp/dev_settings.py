@@ -28,7 +28,7 @@ try:
 except KeyError as e:
     raise RuntimeError("Could not find a SECRET_KEY in environment") from e
 
-ALLOWED_HOSTS = ["*.manysite.net", "localhost"]
+ALLOWED_HOSTS = ["localhost", "test.manysite.net", "workout.manysite.net"]
 
 DEBUG=True
 
