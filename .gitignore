@@ -133,3 +133,5 @@ dmypy.json
 # Testing stuff
 test.py
 export.csv
+
+.pg*

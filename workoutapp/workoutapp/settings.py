@@ -93,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'OPTIONS': {
             'service': 'workoutapp_service',
-            'passfile': '/home/ubuntu/.pgpass',
+            'passfile': '/app/.pgpass',
         },
     }
 }
