@@ -215,11 +215,9 @@ class WorkoutAPIView(APIView):
 
     def get(self, request):
         user = views_helper.get_user_data(request)[0]
-        user_workouts = Workout.objects.filter(user=user)
+        user_workout = Workout.objects.filter(user=user).latest('start_time')
 
-        if user.is_superuser:
-            user_workouts = Workout.objects.all()
-        serializer = WorkoutSerializer(user_workouts, many=True, context={'request': request})
+        serializer = WorkoutSerializer(user_workout, context={'request': request})
   
         return Response(serializer.data)
     
