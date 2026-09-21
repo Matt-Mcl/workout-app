@@ -131,6 +131,9 @@ def FitnessMinsView(request, weeks):
 
     avg_fitness_mins = round(total_fitness_mins / weeks)
 
+    vo2_stats = views_helper.get_vo2_stats(user, VO2s)
+    vo2_axis = views_helper.get_vo2_axis_range(graph_fitness_mins)
+
     return render(
         request=request, 
         template_name="workouts/fitness.html", 
@@ -138,6 +141,8 @@ def FitnessMinsView(request, weeks):
             'graph_fitness_mins': graph_fitness_mins,
             'avg_fitness_mins': avg_fitness_mins,
             'current_fitness_mins': current_fitness_mins,
+            'vo2_stats': vo2_stats,
+            'vo2_axis': vo2_axis,
             'months': int(weeks / 4)
         }
     )

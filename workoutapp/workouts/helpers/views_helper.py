@@ -1,5 +1,6 @@
 from rest_framework_api_key.models import APIKey
-from ..models import User, Workout
+import math
+from ..models import User, Workout, VO2Reading
 from datetime import datetime, timedelta
 from django.utils import timezone
 
@@ -148,3 +149,73 @@ def get_week_fitness_mins(user_id, offset=0):
     total_fitness_mins = sum([w.fitness_mins for w in workouts_with_fitness_mins])
 
     return (total_fitness_mins, start_date, end_date)
+
+
+# A reading older than this is called out as stale on the fitness page
+STALE_VO2_DAYS = 42
+
+
+def format_vo2_reading(reading):
+    return {
+        "value": round(reading.vo2_max, 1),
+        "date": reading.date.strftime("%d/%m/%Y")
+    }
+
+
+def get_vo2_stats(user, readings):
+    # readings are the VO2 readings for the period shown, newest first
+    readings = list(readings)
+
+    if not readings:
+        return None
+
+    values = [r.vo2_max for r in readings]
+    highest_value = max(values)
+    lowest_value = min(values)
+
+    # Where the same value was hit more than once, report when it was first achieved
+    highest = min([r for r in readings if r.vo2_max == highest_value], key=lambda r: r.date)
+    lowest = min([r for r in readings if r.vo2_max == lowest_value], key=lambda r: r.date)
+
+    latest = readings[0]
+    earliest = readings[-1]
+
+    change = round(latest.vo2_max - earliest.vo2_max, 1)
+
+    # The graph carries the last reading forward, so flag a reading that has gone stale
+    days_since_latest = (timezone.localdate() - latest.date).days
+
+    stats = {
+        "latest": format_vo2_reading(latest),
+        "days_since_latest": days_since_latest,
+        "is_stale": days_since_latest > STALE_VO2_DAYS,
+        "highest": format_vo2_reading(highest),
+        "lowest": format_vo2_reading(lowest),
+        "average": round(sum(values) / len(values), 1),
+        "change": change,
+        "change_display": "{}{}".format("+" if change > 0 else "", change),
+        "first_date": earliest.date.strftime("%d/%m/%Y"),
+        "readings": len(readings),
+        "all_time_high": None
+    }
+
+    # Only worth showing the all time high if it was set outside the period shown
+    all_time_high = VO2Reading.objects.filter(user=user).order_by("-vo2_max", "date").first()
+
+    if all_time_high is not None and all_time_high.vo2_max > highest_value:
+        stats["all_time_high"] = format_vo2_reading(all_time_high)
+
+    return stats
+
+
+def get_vo2_axis_range(graph_fitness_mins, padding=3):
+    # Fit the axis to the values plotted rather than a fixed range, so small changes are visible
+    values = [item['vo2_max'] for item in graph_fitness_mins if item['vo2_max']]
+
+    if not values:
+        return {"min": 30, "max": 70}
+
+    return {
+        "min": int(math.floor(min(values))) - padding,
+        "max": int(math.ceil(max(values))) + padding
+    }

@@ -21,6 +21,61 @@
                 <br>
                 <p class="lead"><strong>Average fitness mins in last {{ months }} months: {{ avg_fitness_mins }} minutes</strong></p>
             </div>
+            {% if vo2_stats %}
+            <h4 class="mt-4">VO2 Max in last {{ months }} months</h4>
+            <div class="row row-cols-2 row-cols-md-4 g-3 mt-1">
+                <div class="col">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-muted">Latest</h6>
+                            <p class="display-6 my-2">{{ vo2_stats.latest.value }}</p>
+                            <p class="card-text text-muted mb-0">{{ vo2_stats.latest.date }}</p>
+                            <p class="card-text {% if vo2_stats.is_stale %}text-warning{% else %}text-muted{% endif %} mb-0">
+                                {% if vo2_stats.days_since_latest == 0 %}today{% else %}{{ vo2_stats.days_since_latest }} day{{ vo2_stats.days_since_latest|pluralize }} ago{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-muted">Highest</h6>
+                            <p class="display-6 my-2 text-success">{{ vo2_stats.highest.value }}</p>
+                            <p class="card-text text-muted mb-0">{{ vo2_stats.highest.date }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-muted">Lowest</h6>
+                            <p class="display-6 my-2 text-danger">{{ vo2_stats.lowest.value }}</p>
+                            <p class="card-text text-muted mb-0">{{ vo2_stats.lowest.date }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-muted">Change</h6>
+                            <p class="display-6 my-2 {% if vo2_stats.change > 0 %}text-success{% elif vo2_stats.change < 0 %}text-danger{% endif %}">{{ vo2_stats.change_display }}</p>
+                            <p class="card-text text-muted mb-0">since {{ vo2_stats.first_date }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted mt-3">
+                Average {{ vo2_stats.average }} across {{ vo2_stats.readings }} reading{{ vo2_stats.readings|pluralize }}.
+                {% if vo2_stats.all_time_high %}All time high {{ vo2_stats.all_time_high.value }} on {{ vo2_stats.all_time_high.date }}.{% endif %}
+            </p>
+            {% if vo2_stats.is_stale %}
+            <p class="text-warning">
+                No new VO2 max reading for {{ vo2_stats.days_since_latest }} days &ndash; the graph carries {{ vo2_stats.latest.value }} forward until the next one.
+            </p>
+            {% endif %}
+            {% else %}
+            <p class="text-muted mt-4">No VO2 max readings in the last {{ months }} months.</p>
+            {% endif %}
         </div>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
@@ -55,8 +110,8 @@
                     vo2: {
                         type: 'linear',
                         position: 'right',
-                        max: 70,
-                        min: 30,
+                        max: {{ vo2_axis.max }},
+                        min: {{ vo2_axis.min }},
                     },
                 },
                 plugins: {
