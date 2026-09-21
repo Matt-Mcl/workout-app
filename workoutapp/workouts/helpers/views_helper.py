@@ -162,9 +162,9 @@ def format_vo2_reading(reading):
     }
 
 
-def get_vo2_stats(user, readings):
-    # readings are the VO2 readings for the period shown, newest first
-    readings = list(readings)
+def get_vo2_stats(user):
+    # Every reading for the user, newest first
+    readings = list(VO2Reading.objects.filter(user=user).order_by("-date"))
 
     if not readings:
         return None
@@ -195,15 +195,8 @@ def get_vo2_stats(user, readings):
         "change": change,
         "change_display": "{}{}".format("+" if change > 0 else "", change),
         "first_date": earliest.date.strftime("%d/%m/%Y"),
-        "readings": len(readings),
-        "all_time_high": None
+        "readings": len(readings)
     }
-
-    # Only worth showing the all time high if it was set outside the period shown
-    all_time_high = VO2Reading.objects.filter(user=user).order_by("-vo2_max", "date").first()
-
-    if all_time_high is not None and all_time_high.vo2_max > highest_value:
-        stats["all_time_high"] = format_vo2_reading(all_time_high)
 
     return stats
 

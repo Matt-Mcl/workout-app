@@ -131,7 +131,7 @@ def FitnessMinsView(request, weeks):
 
     avg_fitness_mins = round(total_fitness_mins / weeks)
 
-    vo2_stats = views_helper.get_vo2_stats(user, VO2s)
+    vo2_stats = views_helper.get_vo2_stats(user)
     vo2_axis = views_helper.get_vo2_axis_range(graph_fitness_mins)
 
     return render(
